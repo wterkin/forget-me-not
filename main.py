@@ -3,6 +3,7 @@
  
 from tkinter import Tk, Frame, BOTH
 
+import config
 
 MAIN_WINDOW_TITLE = "Forget-Me-Not version 0,1"
 MAIN_WINDOW_WIDTH = 290
