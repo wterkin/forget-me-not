@@ -2,22 +2,36 @@
 # -*- coding: utf-8 -*-
 from tkinter import *
 
-class EventEditor:
+class EventEditor(Frame):
     def __init__(self, root):
+        Frame.__init__(self, root) # background = "white"
+        #super().__init__(root)
         self.event_name_frame = Frame(root)
         self.event_name_entry = Entry(self.event_name_frame, width=20)
+        self.event_name_entry.pack(side=RIGHT)
         self.event_name_label = Label(self.event_name_frame, width=20, text="Название события")  #  bg='black', fg='white', )
+        self.event_name_label.pack(side=LEFT)
+        self.event_name_frame.pack(padx=10, pady=10)
 
         self.event_type_frame = Frame(root)
-
-        self.event_date_frame = Frame(root)
+        self.memory_day_rb = Radiobutton(self.event_type_frame, text="День памяти")
+        self.memory_day_rb.pack(anchor=W)
+        self.birth_day_rb = Radiobutton(self.event_type_frame, text="День рождения")
+        self.birth_day_rb.pack(anchor=W)
+        self.memory_date_rb = Radiobutton(self.event_type_frame, text="Памятная дата")
+        self.memory_date_rb.pack(anchor=W)
+        self.reminder_date_rb = Radiobutton(self.event_type_frame, text="Напоминание")
+        self.reminder_date_rb.pack(anchor=W)
+        self.event_type_frame.pack(padx=10, pady=10)
+        
+        #self.event_date_frame = Frame(root)
+        
         self.buttons_frame = Frame(root)
         self.ok_button = Button(self.buttons_frame, text="Принять")
+        self.ok_button.pack(side=LEFT)
         self.cancel_button = Button(self.buttons_frame, text="Отмена")
-        self.event_name_entry.pack()
-        self.event_name_label.pack()
-        self.ok_button.pack()
-        self.cancel_button.pack()
+        self.cancel_button.pack(side=RIGHT)
+        self.buttons_frame.pack(padx=10, pady=10)
         
     #b1['text'] = "Изменено"
     #b1['bg'] = '#000000'

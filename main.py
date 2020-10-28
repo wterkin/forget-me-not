@@ -1,9 +1,10 @@
-#!/usr/bin/python
+    #!/usr/bin/python
 # -*- coding: utf-8 -*-
  
 from tkinter import *
 from tkinter.ttk  import Frame, Button, Style
 
+import eventeditor as eved
 import config
 
 MAIN_WINDOW_TITLE = "Forget-Me-Not version 0,1"
@@ -28,7 +29,7 @@ class MainWindow(Frame):
         self.centerWindow()
         
         self.toolbar_frame = Frame(self.parent)
-        self.event_add_button = Button(self.toolbar_frame, text="Добавить событие")
+        self.event_add_button = Button(self.toolbar_frame, text="Добавить событие", command=self.event_add)
         self.event_add_button.pack(side=LEFT)
         self.quit_button = Button(self.toolbar_frame, text="Выйти", command=self.quit)
         self.quit_button.pack(side=RIGHT)
@@ -57,8 +58,17 @@ class MainWindow(Frame):
         li_top = (li_screen_height - li_window_height) / 2
         self.parent.geometry('%dx%d+%d+%d' % (li_window_width, li_window_height, li_left, li_top))
 
+    def event_add(self):
+        event_editor = eved.EventEditor(self.parent)
+        print("****", event_editor)
+        event_editor.mainloop()
+        #event_editor.grab_set()
+        #event_editor = EventEditor(root)
+        #root.mainloop()
         
-
+        #window = eved.EventEditor(self.parent)
+        #window.mainloop()
+        
 def main():
     root = Tk()
     application = MainWindow(root)
