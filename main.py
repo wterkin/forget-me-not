@@ -28,13 +28,24 @@ class MainWindow(Frame):
         self.centerWindow()
         
         self.toolbar_frame = Frame(self.parent)
-        lo_quit_button = Button(self.toolbar_frame, text="Выйти", command=self.quit)
-        lo_quit_button.pack(side=RIGHT)
-        #lo_quit_button.place(x=50, y=50)
+        self.event_add_button = Button(self.toolbar_frame, text="Добавить событие")
+        self.event_add_button.pack(side=LEFT)
+        self.quit_button = Button(self.toolbar_frame, text="Выйти", command=self.quit)
+        self.quit_button.pack(side=RIGHT)
         self.toolbar_frame.pack(side=TOP)
+        
         self.text_frame = Frame(self.parent)
         self.text = Text(self.text_frame)
         self.text.pack()
+        self.scroll_bar = Scrollbar(command=self.text.yview)
+        self.scroll_bar.pack(side=RIGHT, fill=Y)
+        self.text.config(yscrollcommand=self.scroll_bar.set)
+        #self.text.insert(1.0, "Hello world!\nline two")
+ 
+        #self.text.tag_add('title', 1.0, '1.end')
+        #self.text.tag_config('title', justify=CENTER,
+                        #font=("Verdana", 24, 'bold'))
+ 
         self.text_frame.pack(expand=1, fill=BOTH)
         
     def centerWindow(self):
