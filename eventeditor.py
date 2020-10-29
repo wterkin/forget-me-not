@@ -14,22 +14,68 @@ class EventEditor(Frame):
         self.event_name_frame.pack(padx=10, pady=10)
 
         self.event_type_frame = Frame(root)
-        self.memory_day_rb = Radiobutton(self.event_type_frame, text="День памяти")
-        self.memory_day_rb.pack(anchor=W)
-        self.birth_day_rb = Radiobutton(self.event_type_frame, text="День рождения")
-        self.birth_day_rb.pack(anchor=W)
-        self.memory_date_rb = Radiobutton(self.event_type_frame, text="Памятная дата")
-        self.memory_date_rb.pack(anchor=W)
-        self.reminder_date_rb = Radiobutton(self.event_type_frame, text="Напоминание")
-        self.reminder_date_rb.pack(anchor=W)
+        #self.event_type_var = IntVar()
+        #self.event_type_var.set(1)
+        #self.memory_day_rb = Radiobutton(indicatoron=1,
+                                         #master=self.event_type_frame,
+                                         #text=" День памяти   ",
+                                         #value=0,
+                                         #variable=self.event_type_var
+                                         #)
+        #self.memory_day_rb.pack(anchor=W)
+        #self.birth_day_rb = Radiobutton(indicatoron=1,
+                                        #master=self.event_type_frame,
+                                        #text=" День рождения ",
+                                        #value=1,
+                                        #variable=self.event_type_var
+                                        #)
+        #self.birth_day_rb.pack(anchor=W)
+        #self.memory_date_rb = Radiobutton(indicatoron=1,
+                                          #master=self.event_type_frame,
+                                          #text=" Памятная дата ",
+                                          #value=2,
+                                          #variable=self.event_type_var
+                                          #)
+        #self.memory_date_rb.pack(anchor=W)
+        #self.reminder_date_rb = Radiobutton(indicatoron=1,
+                                            #master=self.event_type_frame,
+                                            #text=" Напоминание   ",
+                                            #value=3,
+                                            #variable=self.event_type_var
+                                            #)
+        #self.reminder_date_rb.pack(anchor=W)
+        #++++++++++++++++
+        #self.some_flag = BooleanVar()
+        #self.some_flag.set(1)
+        #self.some_check = Checkbutton(self.event_type_frame,
+                                      #text="Подтверждаю!",
+                                      #variable=self.some_flag,
+                                      #onvalue=1,
+                                      #offvalue=0)
+        #self.some_check.pack(anchor=W)
+        #-----------------
+        self.event_type_box = Listbox(self.event_type_frame, width=20, height=4)
+        self.event_type_box.insert(0, "День памяти")
+        self.event_type_box.insert(1, "День рождения")
+        self.event_type_box.insert(2, "Памятная дата")
+        self.event_type_box.insert(3, "Напоминание")
+        self.event_type_box.pack()
+        #self.event_type_box.curselection()
         self.event_type_frame.pack(padx=10, pady=10)
+        
+
+        
         
         #self.event_date_frame = Frame(root)
         
         self.buttons_frame = Frame(root)
-        self.ok_button = Button(self.buttons_frame, text="Принять")
+        self.ok_button = Button(command=self.quit,
+                                master=self.buttons_frame,
+                                text="Принять")
         self.ok_button.pack(side=LEFT)
-        self.cancel_button = Button(self.buttons_frame, text="Отмена")
+        self.cancel_button = Button(command=self.quit,
+                                    master=self.buttons_frame,
+                                    text="Отмена")
         self.cancel_button.pack(side=RIGHT)
         self.buttons_frame.pack(padx=10, pady=10)
         
