@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
- 
+#https://younglinux.info/tkinter/bind.php
 from tkinter import *
 from tkinter.ttk  import Frame, Button, Style
 
