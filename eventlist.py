@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from tkinter import *
 
-class EventList(Frame):
+class EventList(Toplevel):
     def __init__(self, root):
         Frame.__init__(self, root) # background = "white"
         self.list_buttons_frame = Frame(root)

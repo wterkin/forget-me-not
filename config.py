@@ -2,37 +2,66 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
+import json
 
 CONFIG_FOLDER = ".config/forget-me-not/" 
 CONFIG_FILE_NAME = "forget-me-not.json"
-
-
+DATABASE_FILE_NAME = "forget-me-not.db"
+DATABASE_FILE_KEY = "database_file_name"
 class Configuration(object):
+    """Класс конфигурации программы"""
     def __init__(self):
-        self.config = dict()
-        if not self._check_config_folder():
+        """Конструктор"""
+        config_folder_path = Path(Path.home() / CONFIG_FOLDER)
+        if not config_folder_path.exists():
             
-            self._create_config_folder()
-        
-        
-    def _check_config_folder(self):
-        config_folder_path = Path(Path.home() / CONFIG_FOLDER)
-        return config_folder_path.exists()
-     
-    def _create_config_folder(self):
-        config_folder_path = Path(Path.home() / CONFIG_FOLDER)
-        config_folder_path.mkdir()
+            config_folder_path.mkdir()
+        config_file = config_folder_path / CONFIG_FILE_NAME
+        if config_file.exists():
+            
+            self.read_config()
+        else:
+            
+            self.config = dict()
+
+        if not DATABASE_FILE_KEY in self.config:
+            self.store_value(DATABASE_FILE_KEY, 
+                             str(Path.home() / CONFIG_FOLDER / DATABASE_FILE_NAME))
+        #print("***", self.restore_value(DATABASE_FILE_KEY))
+
     
     def store_value(self, pkey, pvalue):
-        pass
+        """Сохраняет заданное значение по заданному ключу в словарь конфигурации."""
+        result = False
+        if pkey:
+            if pvalue:
+                self.config[pkey] = pvalue
+                result = True
+        return result        
+    
     
     def restore_value(self, pkey):
-        pass
+        """Возвращает значение, сохраненное в словаре конфигурации по заданному ключу."""
+        if pkey in self.config:
+
+            return self.config[pkey]
+        return None
+    
         
     def write_config(self):
-        pass
-    
+        """Сохраняет словарь конфигурации в файл в формате json."""
+        config_file = open(Path.home() / CONFIG_FOLDER / CONFIG_FILE_NAME, "w", encoding="utf-8")
+        #json_data = json.dumps(self.config, sort_keys=True, indent=4) #XXXX
+        #print("====", json_data)
+        config_file.write(json.dumps(self.config, sort_keys=True, indent=4))
+        config_file.close()
+        
+        
     def read_config(self):
-        pass
+        """Считывает сохраненную конфигурацию из json файла в словарь."""
+        config_file = open(Path.home() / CONFIG_FOLDER / CONFIG_FILE_NAME, "r", encoding="utf-8")
+        self.config = json.load(config_file)
+        #print("====", self.config)
+        config_file.close()
     
     

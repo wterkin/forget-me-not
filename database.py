@@ -6,8 +6,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 metadata = MetaData()
 Base = declarative_base()
-
-class CEventType(object):
+engine = create_engine('sqlite://foo.db')
+class CEventType(Base):
     __tablename__ = 'tbl_types'
     id = Column(Integer,
                 autoincrement=True,
@@ -30,7 +30,7 @@ class CEventType(object):
         
         return f"ID:{self.id}, Name:{self.fname}, Color:{self.fcolor}"
     
-class CEvent(object):
+class CEvent(Base):
     __tablename__ = 'tbl_events'    
     id = Column(Integer,
                 autoincrement=True,

@@ -6,18 +6,18 @@ from tkinter.ttk  import Frame, Button, Style
 
 import eventeditor as eved
 import eventlist as evlst
-import config
+import config as cfg
 
 MAIN_WINDOW_TITLE = "Forget-Me-Not version 0,1"
 MAIN_WINDOW_WIDTH = 640 
 MAIN_WINDOW_HEIGHT = 480
 
 class MainWindow(Frame):
-    
     def __init__(self, po_parent):
         """Конструктор."""
         Frame.__init__(self, po_parent) # background = "white"
         self.parent = po_parent
+        self.config = cfg.Configuration()
         self.construct_window()
 
     def construct_window(self):
@@ -32,7 +32,7 @@ class MainWindow(Frame):
         self.toolbar_frame = Frame(self.parent)
         self.event_list_button = Button(self.toolbar_frame, text="Список событий", command=self.event_list)
         self.event_list_button.pack(side=LEFT)
-        self.quit_button = Button(self.toolbar_frame, text="Выйти", command=self.quit)
+        self.quit_button = Button(self.toolbar_frame, text="Выйти", command=self.quit_program)
         self.quit_button.pack(side=RIGHT)
         self.toolbar_frame.pack(side=TOP)
         
@@ -60,9 +60,9 @@ class MainWindow(Frame):
         self.parent.geometry('%dx%d+%d+%d' % (li_window_width, li_window_height, li_left, li_top))
 
     def event_list(self):
-        event_list = evlst.EventList(self.parent)
+        #event_list = evlst.EventList(self.parent)
         #print("****", event_editor)
-        event_list.mainloop()
+        #event_list.mainloop()
         #event_editor.grab_set()
         #event_editor = EventEditor(root)
         #root.mainloop()
@@ -70,7 +70,21 @@ class MainWindow(Frame):
         #window = eved.EventEditor(self.parent)
         #window.mainloop()
         
+        self.parent.withdraw() # Скрыть окно
+        event_list = evlst.EventList(self.parent)
+            #self.win_splash = tk.Toplevel(self.win_root) # Создать новое окно
+        event_list.wm_transient(self.parent)    
+            #self.win_splash.wm_transient(self.win_root) # Окно зависимым
+            #self.conf["Frame_Splash"] = FrameSplash(self, self.win_splash)
+        
+        
+    def quit_program(self):
+        self.config.write_config()
+        self.quit()
+        
 def main():
+    
+  
     root = Tk()
     application = MainWindow(root)
     root.mainloop()
