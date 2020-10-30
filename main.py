@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #https://younglinux.info/tkinter/bind.php
-from tkinter import *
-from tkinter.ttk  import Frame, Button, Style
+#from tkinter import *
+from tkinter.ttk  import Style
+import tkinter as tk
 
 import eventeditor as eved
 import eventlist as evlst
@@ -12,10 +13,11 @@ MAIN_WINDOW_TITLE = "Forget-Me-Not version 0,1"
 MAIN_WINDOW_WIDTH = 640 
 MAIN_WINDOW_HEIGHT = 480
 
-class MainWindow(Frame):
-    def __init__(self, po_parent):
+class MainWindow(tk.Frame):
+    def __init__(self, po_parent, **kwargs):
         """Конструктор."""
-        Frame.__init__(self, po_parent) # background = "white"
+        tk.Frame.__init__(self, po_parent, **kwargs) # background = "white"
+        #tk.Frame.__init__(self, master, **kwargs)
         self.parent = po_parent
         self.config = cfg.Configuration()
         self.construct_window()
@@ -29,18 +31,18 @@ class MainWindow(Frame):
         self.pack()
         self.centerWindow()
         
-        self.toolbar_frame = Frame(self.parent)
-        self.event_list_button = Button(self.toolbar_frame, text="Список событий", command=self.event_list)
-        self.event_list_button.pack(side=LEFT)
-        self.quit_button = Button(self.toolbar_frame, text="Выйти", command=self.quit_program)
-        self.quit_button.pack(side=RIGHT)
-        self.toolbar_frame.pack(side=TOP)
+        self.toolbar_frame = tk.Frame(self.parent)
+        self.event_list_button = tk.Button(self.toolbar_frame, text="Список событий", command=self.event_list)
+        self.event_list_button.pack(side=tk.LEFT)
+        self.quit_button = tk.Button(self.toolbar_frame, text="Выйти", command=self.quit_program)
+        self.quit_button.pack(side=tk.RIGHT)
+        self.toolbar_frame.pack(side=tk.TOP)
         
-        self.text_frame = Frame(self.parent)
-        self.text = Text(self.text_frame)
+        self.text_frame = tk.Frame(self.parent)
+        self.text = tk.Text(self.text_frame)
         self.text.pack()
-        self.scroll_bar = Scrollbar(command=self.text.yview)
-        self.scroll_bar.pack(side=RIGHT, fill=Y)
+        self.scroll_bar = tk.Scrollbar(command=self.text.yview)
+        self.scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
         self.text.config(yscrollcommand=self.scroll_bar.set)
         #self.text.insert(1.0, "Hello world!\nline two")
  
@@ -48,9 +50,12 @@ class MainWindow(Frame):
         #self.text.tag_config('title', justify=CENTER,
                         #font=("Verdana", 24, 'bold'))
  
-        self.text_frame.pack(expand=1, fill=BOTH)
+        self.text_frame.pack(expand=1, fill=tk.BOTH)
         
     def centerWindow(self):
+        #w = root.winfo_screenwidth()
+        #h = root.winfo_screenheight()
+
         li_window_width = MAIN_WINDOW_WIDTH
         li_window_height = MAIN_WINDOW_HEIGHT
         li_screen_width = self.parent.winfo_screenwidth()
@@ -67,13 +72,16 @@ class MainWindow(Frame):
         #event_editor = EventEditor(root)
         #root.mainloop()
         
-        #window = eved.EventEditor(self.parent)
+        ##window = eved.EventEditor(self.parent)
         #window.mainloop()
-        
-        self.parent.withdraw() # Скрыть окно
-        event_list = evlst.EventList(self.parent)
+        #print("!!!!!!!!!!!!!!!!!", self)
+        #self.parent.withdraw() # Скрыть окно
+        event_list = evlst.EventList(self)
+        #event_list.mainloop()
+        #event_list.pack()
+        ###print("##########", event_list)
             #self.win_splash = tk.Toplevel(self.win_root) # Создать новое окно
-        event_list.wm_transient(self.parent)    
+        #event_list.wm_transient(self.parent)    
             #self.win_splash.wm_transient(self.win_root) # Окно зависимым
             #self.conf["Frame_Splash"] = FrameSplash(self, self.win_splash)
         
@@ -85,7 +93,7 @@ class MainWindow(Frame):
 def main():
     
   
-    root = Tk()
+    root = tk.Tk()
     application = MainWindow(root)
     root.mainloop()
  
