@@ -78,7 +78,7 @@ class MainWindow(tk.Frame):
         #self.master.withdraw() # Скрыть окно
         event_list = evlst.EventList(self)
         #event_list.mainloop()
-        event_list.pack()
+        #event_list.pack()
         ###print("##########", event_list)
             #self.win_splash = tk.Toplevel(self.win_root) # Создать новое окно
         #event_list.wm_transient(self.master)    
