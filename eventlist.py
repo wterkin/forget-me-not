@@ -4,19 +4,9 @@
 import tkinter as tk
 
 class EventList(tk.Toplevel):
-    def __init__(self, root, **kwargs):
-        #Tk.__init__(self)
-        print("!!", **kwargs)
-        tk.Toplevel().__init__(self, root, **kwargs)
-        self.transient(root)
-        #self.grab_set()
-        root.wait_window(self)
-        print("**************** 1")
-        #super(EventList, self).__init__(root) # 
-        #print("**************** 2")
-        self.list_buttons_frame = tk.Frame(root)
-        #print("**************** 3")
-
+    def __init__(self, master, **kwargs):
+        tk.Toplevel.__init__(self, master, **kwargs)
+        self.list_buttons_frame = tk.Frame(self)
         self.add_button = tk.Button(#command=self.quit,
                                     master=self.list_buttons_frame,
                                     text="Добавить")
@@ -29,23 +19,27 @@ class EventList(tk.Toplevel):
                                        master=self.list_buttons_frame,
                                        text="Удалить")
         self.delete_button.pack(side=tk.RIGHT)
-        self.list_buttons_frame.pack(padx=10, pady=10)
+        self.list_buttons_frame.pack()  #! padx=10, pady=10)
         
-        self.events_frame = tk.Frame(root)
-        self.events_box = tk.Listbox(self.events_frame, width=20, height=4)
+        self.events_frame = tk.Frame(self)
+        self.events_box = tk.Listbox(self.events_frame)  #! , width=20, height=4)
         self.events_box.pack()
-        #self.event_type_box.curselection()
-        self.events_frame.pack(padx=10, pady=10)
+        #elf.event_type_box.curselection()
+        self.events_frame.pack()  #! padx=10, pady=10)
 
-        self.close_button_frame = tk.Frame(root)
+        self.close_button_frame = tk.Frame(self)
         self.close_button = tk.Button(#command=self.quit,
                                       master=self.close_button_frame,
                                       text="Закрыть")
-        self.close_button.pack(side=tk.RIGHT)
-        self.close_button_frame.pack(padx=10, pady=10)
+        self.close_button.pack()  #! side=tk.RIGHT)
+        self.close_button_frame.pack()  #! padx=10, pady=10)
+        self.transient(master)
+        self.grab_set()
+        master.wait_window(self)
+        #print("**************** 1")
 
 
 if __name__ == '__main__':
-    root = tk.Tk()
-    event_list = EventList(root)
-    root.mainloop()
+    master = tk.Tk()
+    event_list = EventList(master)
+    master.mainloop()
