@@ -5,19 +5,7 @@ from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, cre
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-metadata = MetaData()
 Base = declarative_base()
-
-class Database(object):
-    """Класс осуществляет работу с БД."""
-    def __init__(self, pdatabase_path):
-        """Конструктор."""
-        self.engine = create_engine('sqlite://'+pdatabase_path)
-        self.session = sessionmaker(bind=self.engine)
-
-    def migrate(self):
-        """Создает или изменяет БД в соответствии с описанной в классах структурой."""
-        Base.metadata.create_all()
 
 
 class CEventType(Base):
@@ -56,5 +44,22 @@ class CEvent(Base):
                     nullable=False)    
     fyear = Column(Integer,
                    nullable=False)    
-    #ftype =  
+    ftype = Column(Integer, ForeignKey(CEventType.id))
+
+
+class CDatabase(object):
+    """Класс осуществляет работу с БД."""
+    def __init__(self, pdatabase_path):
+        """Конструктор."""
+        print("*1 ", pdatabase_path)
+        self.engine = create_engine('sqlite://'+pdatabase_path)
+        self.session = sessionmaker(bind=self.engine)
+        #self.metadata = MetaData()
+        Base.metadata.bind = self.engine
+
+        #self.session.configure(bind=self.engine)
+
+    def migrate(self):
+        """Создает или изменяет БД в соответствии с описанной в классах структурой."""
+        Base.metadata.create_all()
 

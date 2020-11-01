@@ -21,10 +21,10 @@ class MainWindow(tk.Frame):
         """Конструктор."""
         self.master = pmaster
         tk.Frame.__init__(self, self.master, **kwargs) # background = "white"
-        #tk.Frame.__init__(self, master, **kwargs)
         self.config = cfg.Configuration()
+        self.database = db.CDatabase(self.config.restore_value(cfg.DATABASE_FILE_KEY))
         if not self.is_database_exists():
-            db.migrate()
+            self.database.migrate()
             
         self.construct_window()
 
@@ -97,6 +97,7 @@ def main():
     main_window = MainWindow(root)
     main_window.pack()
     root.mainloop()
+ 
  
 if __name__ == '__main__':
     main()    
