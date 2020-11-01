@@ -52,7 +52,7 @@ class CDatabase(object):
     def __init__(self, pdatabase_path):
         """Конструктор."""
         print("*1 ", pdatabase_path)
-        self.engine = create_engine('sqlite://'+pdatabase_path)
+        self.engine = create_engine('sqlite:///'+pdatabase_path)
         self.session = sessionmaker(bind=self.engine)
         #self.metadata = MetaData()
         Base.metadata.bind = self.engine
