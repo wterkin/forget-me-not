@@ -4,10 +4,13 @@
 #from tkinter import *
 from tkinter.ttk  import Style
 import tkinter as tk
+#import pathlib
+from pathlib import Path
 
+import config as cfg
+import database as db
 import eventeditor as eved
 import eventlist as evlst
-import config as cfg
 
 MAIN_WINDOW_TITLE = "Forget-Me-Not version 0,1"
 MAIN_WINDOW_WIDTH = 640 
@@ -20,8 +23,18 @@ class MainWindow(tk.Frame):
         tk.Frame.__init__(self, self.master, **kwargs) # background = "white"
         #tk.Frame.__init__(self, master, **kwargs)
         self.config = cfg.Configuration()
+        if not self.is_database_exists():
+            db.migrate()
+            
         self.construct_window()
 
+
+    def is_database_exists(self):
+        """Проверяет наличие базы данных по пути в конфигурации."""
+        config_folder_path = Path(self.config.restore_value(cfg.DATABASE_FILE_KEY))
+        return config_folder_path.exists()
+            
+        
     def construct_window(self):
         """Создает интерфейс окна."""
         self.master.title(MAIN_WINDOW_TITLE)
@@ -52,7 +65,9 @@ class MainWindow(tk.Frame):
  
         self.text_frame.pack(expand=1, fill=tk.BOTH)
         
+        
     def centerWindow(self):
+        """Центрирует окно относительно экрана."""
         #w = root.winfo_screenwidth()
         #h = root.winfo_screenheight()
 
@@ -64,35 +79,20 @@ class MainWindow(tk.Frame):
         li_top = (li_screen_height - li_window_height) / 2
         self.master.geometry('%dx%d+%d+%d' % (li_window_width, li_window_height, li_left, li_top))
 
+
     def event_list(self):
-        #event_list = evlst.EventList(self.master)
-        #print("****", event_editor)
-        #event_list.mainloop()
-        #event_editor.grab_set()
-        #event_editor = EventEditor(root)
-        #root.mainloop()
-        
-        ##window = eved.EventEditor(self.master)
-        #window.mainloop()
-        #print("!!!!!!!!!!!!!!!!!", self)
-        #self.master.withdraw() # Скрыть окно
+        """Создает и открывает окно списка событий."""
         event_list = evlst.EventList(self)
-        #event_list.mainloop()
-        #event_list.pack()
-        ###print("##########", event_list)
-            #self.win_splash = tk.Toplevel(self.win_root) # Создать новое окно
-        #event_list.wm_transient(self.master)    
-            #self.win_splash.wm_transient(self.win_root) # Окно зависимым
-            #self.conf["Frame_Splash"] = FrameSplash(self, self.win_splash)
         
         
     def quit_program(self):
+        """Закрывает программу."""
         self.config.write_config()
         self.quit()
+
         
 def main():
-    
-  
+    """Запускающая процедура."""
     root = tk.Tk()
     main_window = MainWindow(root)
     main_window.pack()

@@ -1,12 +1,12 @@
 #!/usr/bin/python
 ## -*- coding: utf-8 -*-
 
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 
 metadata = MetaData()
 Base = declarative_base()
-engine = create_engine('sqlite://foo.db')
+
 class CEventType(Base):
     __tablename__ = 'tbl_types'
     id = Column(Integer,
@@ -44,3 +44,7 @@ class CEvent(Base):
     fyear = Column(Integer,
                    nullable=False)    
     #ftype =  
+
+def migrate(pdatabase_path):
+    """Создает или изменяет БД в соответствии с описанной в классах структурой."""
+    engine = create_engine('sqlite://'+pdatabase_path)
