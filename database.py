@@ -18,7 +18,8 @@ class CEventType(Base):
     fname = Column(String,
                     nullable=False,
                     unique=True)
-    fcolor = Column(Integer)
+    fcolor = Column(String,
+                    nullable=False)
     fstatus = Column(Integer,
                         nullable=False)
     def __init__(self, pname, pcolor):
@@ -53,7 +54,7 @@ class CDatabase(object):
         """Конструктор."""
         print("*1 ", pdatabase_path)
         self.engine = create_engine('sqlite:///'+pdatabase_path)
-        self.session = sessionmaker(bind=self.engine)
+        self.session = sessionmaker(bind=self.engine)()
         #self.metadata = MetaData()
         Base.metadata.bind = self.engine
 
@@ -62,4 +63,19 @@ class CDatabase(object):
     def migrate(self):
         """Создает или изменяет БД в соответствии с описанной в классах структурой."""
         Base.metadata.create_all()
+        count = self.session.query(CEventType).count()
+        print("*** Count: ", count)
+        if count == 0:
+            #tk_rgb = "#%02x%02x%02x" % (128, 192, 200)
+            print("*** insert")
+            event_type = CEventType("День памяти ", "#8db0bd")
+            self.session.add(event_type)
+            event_type = CEventType("День рождения ", "#ecc176")
+            self.session.add(event_type)
+            event_type = CEventType("Памятная дата - ", "#02b6ec")
+            self.session.add(event_type)
+            event_type = CEventType("Напоминание: ", "#6dec04")
+            self.session.add(event_type)
+            self.session.commit()
 
+    

@@ -1,24 +1,30 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-#from tkinter import *
+
 import tkinter as tk
+import eventeditor as eved
+
 
 class EventList(tk.Toplevel):
     """Класс окна списка событий."""
     def __init__(self, master, **kwargs):
         """Конструктор."""
         tk.Toplevel.__init__(self, master, **kwargs)
+        self.construct_window()
+   
+   
+    def construct_window(self):
         # *** Фрейм кнопок
         self.list_buttons_frame = tk.Frame(self)
-        self.add_button = tk.Button(#command=self.quit,
+        self.add_button = tk.Button(command=self.insert_event,
                                     master=self.list_buttons_frame,
                                     text="Добавить")
         self.add_button.pack(side=tk.LEFT)
-        self.edit_button = tk.Button(#command=self.quit,
+        self.edit_button = tk.Button(command=self.update_event,
                                      master=self.list_buttons_frame,
                                      text="Редактировать")
         self.edit_button.pack(side=tk.LEFT)  # tk.RIGHT)
-        self.delete_button = tk.Button(#command=self.quit,
+        self.delete_button = tk.Button(command=self.delete_event,
                                        master=self.list_buttons_frame,
                                        text="Удалить")
         self.delete_button.pack(side=tk.LEFT)  # tk.RIGHT)
@@ -40,6 +46,22 @@ class EventList(tk.Toplevel):
         self.grab_set()
         master.wait_window(self)
 
+    
+    def insert_event(self):
+        """Добавляет новое событие в базу."""
+        pass
+
+    
+    def update_event(self):
+        """Изменяет уже существующее событие."""
+        pass
+
+    
+    def delete_event(self):
+        """Удаляет выбранное событие."""
+        pass
+
+    
 if __name__ == '__main__':
     master = tk.Tk()
     event_list = EventList(master)
