@@ -49,7 +49,8 @@ class EventList(tk.Toplevel):
     
     def insert_event(self):
         """Добавляет новое событие в базу."""
-        pass
+        event_editor = eved.EventEditor(self)
+
 
     
     def update_event(self):

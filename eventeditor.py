@@ -1,11 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import tkinter as tk
+import tkcalendar as tkcal
 
 class EventEditor(tk.Toplevel):
     def __init__(self, pmaster, **kwargs):
         tk.Toplevel.__init__(self, pmaster, **kwargs)
-        self.master = pmaster
+        #self.master = pmaster
         
         # *** Наименование события
         self.event_name_frame = tk.Frame(self)
@@ -33,7 +34,16 @@ class EventEditor(tk.Toplevel):
                                    pady=10)
       
         # *** Дата события
-        
+        self.event_date_frame = tk.Frame(self)
+        self.event_date = tkcal.DateEntry(self.event_date_frame,
+                                    width=12,
+                                    #background='darkblue',
+                                    #foreground='white',
+                                    borderwidth=2)        
+        self.event_date.pack()
+        self.event_date_frame.pack(padx=10,
+                                   pady=10)
+
         # *** Кнопки 
         self.buttons_frame = tk.Frame(self)
         self.ok_button = tk.Button(command=self.quit,
@@ -46,8 +56,12 @@ class EventEditor(tk.Toplevel):
         self.cancel_button.pack(side=tk.RIGHT)
         self.buttons_frame.pack(padx=10,
                                 pady=10)
+        self.transient(pmaster)
+        self.grab_set()
+        pmaster.wait_window(self)
+        
         
 if __name__ == '__main__':
-    root = tk.Tk()
+    root = tk.Tk()  
     event_editor = EventEditor(root)
     root.mainloop()
