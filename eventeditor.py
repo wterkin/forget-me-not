@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import tkinter as tk
 import tkcalendar as tkcal
+from datetime import datetime
 
 class EventEditor(tk.Toplevel):
     def __init__(self, pmaster, pdatabase, pid, **kwargs):
@@ -75,9 +76,14 @@ class EventEditor(tk.Toplevel):
     
     def save_data(self):
         """Сохраняет введённые данные."""
+        date_str = self.event_date_entry.get()
+        date_date = datetime.strptime(date_str, "%d.%m.%Y")
+        selected_items = self.event_type_box.curselection()
+        #date_dt3 = datetime.strptime(date_str3, '%m-%d-%Y')
+        #print("^^^^^ ", self.event_date_entry.get())
         self.database.insert_event(self.event_name_entry.get().strip(),
-                                   self.event_date_entry.get(),
-                                   self.event_type_box.curselection())
+                                   date_date,
+                                   selected_items[0])
         self.destroy()
     
 if __name__ == '__main__':

@@ -16,7 +16,12 @@ class EventList(tk.Toplevel):
         self.master = pmaster
         self.database = pdatabase
         self.construct_window()
-   
+        self.load_data()
+        # *** Показываем окно
+        self.transient(self.master)
+        self.grab_set()
+        self.master.wait_window(self)
+
    
     def construct_window(self):
         """Создает интерфейс окна."""
@@ -34,7 +39,7 @@ class EventList(tk.Toplevel):
                                        master=self.list_buttons_frame,
                                        text="Удалить")
         self.delete_button.pack(side=tk.LEFT)  # tk.RIGHT)
-        self.close_button = tk.Button(command=self.quit,
+        self.close_button = tk.Button(command=self.destroy,
                                       master=self.list_buttons_frame,
                                       text="Закрыть")
         self.close_button.pack(side=tk.RIGHT)
@@ -47,10 +52,6 @@ class EventList(tk.Toplevel):
         #elf.event_type_box.curselection()
         self.events_frame.pack(padx=10, pady=10)
 
-        # *** Показываем окно
-        self.transient(self.master)
-        self.grab_set()
-        self.master.wait_window(self)
    
 
     def delete_event(self):
@@ -67,9 +68,9 @@ class EventList(tk.Toplevel):
 
     def load_data(self):
         """Обновляет данные в списке."""
-        self.event_id_list, self.event_name_list = db.get_events_list()
+        self.event_id_list, self.event_name_list = self.database.get_events_list()
         for name in self.event_name_list:
-            self.events_box.insert(tk.end, name)
+            self.events_box.insert(tk.END, name)
 
 
     def update_event(self):

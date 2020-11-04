@@ -56,6 +56,7 @@ class CEvent(Base):
         self.fmonth = pdate.month
         self.fyear = pdate.year
         self.ftype = ptype
+        #print("*** ", self.fname, self.fday, self.fmonth, self.fyear, self.ftype)
 
 
 
@@ -94,9 +95,11 @@ class CDatabase(object):
         """Возвращает события из базы."""
         event_name_list = []
         event_id_list = []
-        for event in self.session.query(CEvent).order_by(CEvent.ftype, CEvent.fname): 
+        queried_data = self.session.query(CEvent).order_by(CEvent.ftype, CEvent.fname)
+        print("$$$$ ",queried_data)
+        for event in queried_data: 
             
-            event_name_list.append(event.name)
+            event_name_list.append(event.fname)
             event_id_list.append(event.id)
         return event_id_list, event_name_list
 
