@@ -10,9 +10,10 @@ import eventeditor as eved
 
 class EventList(tk.Toplevel):
     """Класс окна списка событий."""
-    def __init__(self, master, pdatabase, **kwargs):
+    def __init__(self, pmaster, pdatabase, **kwargs):
         """Конструктор."""
-        tk.Toplevel.__init__(self, master, **kwargs)
+        tk.Toplevel.__init__(self, pmaster, **kwargs)
+        self.master = pmaster
         self.database = pdatabase
         self.construct_window()
    
@@ -47,9 +48,9 @@ class EventList(tk.Toplevel):
         self.events_frame.pack(padx=10, pady=10)
 
         # *** Показываем окно
-        self.transient(master)
+        self.transient(self.master)
         self.grab_set()
-        master.wait_window(self)
+        self.master.wait_window(self)
    
 
     def delete_event(self):

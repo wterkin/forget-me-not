@@ -42,27 +42,28 @@ class EventEditor(tk.Toplevel):
       
         # *** Дата события
         self.event_date_frame = tk.Frame(self)
-        self.event_date = tkcal.DateEntry(self.event_date_frame,
+        self.event_date_entry = tkcal.DateEntry(self.event_date_frame,
                                     width=12,
                                     #background='darkblue',
                                     #foreground='white',
                                     borderwidth=2)        
-        self.event_date.pack()
+        self.event_date_entry.pack()
         self.event_date_frame.pack(padx=10,
                                    pady=10)
 
         # *** Кнопки 
         self.buttons_frame = tk.Frame(self)
-        self.ok_button = tk.Button(command=self.save,
+        self.ok_button = tk.Button(command=self.save_data,
                                    master=self.buttons_frame,
                                    text="Принять")
         self.ok_button.pack(side=tk.LEFT)
-        self.cancel_button = tk.Button(command=self.close,
+        self.cancel_button = tk.Button(command=self.quit,
                                        master=self.buttons_frame,
                                        text="Отмена")
         self.cancel_button.pack(side=tk.RIGHT)
         self.buttons_frame.pack(padx=10,
                                 pady=10)
+        
         self.transient(self.master)
         self.grab_set()
         self.master.wait_window(self)
@@ -74,7 +75,10 @@ class EventEditor(tk.Toplevel):
     
     def save_data(self):
         """Сохраняет введённые данные."""
-        self.database.insert_event()
+        self.database.insert_event(self.event_name_entry.get().strip(),
+                                   self.event_date_entry.get(),
+                                   self.event_type_box.curselection())
+        self.destroy()
     
 if __name__ == '__main__':
     root = tk.Tk()  
