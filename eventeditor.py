@@ -70,9 +70,17 @@ class EventEditor(tk.Toplevel):
         self.master.wait_window(self)
         
         
+    
     def load_data(self):
         """Процедура загрузки данных в контролы."""
-        pass
+        event_dict = self.database.get_event_data(self.id)
+        self.event_name_entry.insert(tk.END, event_dict["fname"])
+        self.event_date_entry.set_date(event_dict["fdate"])
+        self.event_type_box.select_set(self.event_id_list.index(event_dict["ftype"]))
+        #self.event_id_list, self.event_name_list = self.database.get_events_list()
+        #for name in self.event_name_list:
+            #self.events_box.insert(tk.END, name)
+    
     
     def save_data(self):
         """Сохраняет введённые данные."""

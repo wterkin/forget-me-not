@@ -5,6 +5,8 @@ from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, cre
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from datetime import datetime
+
 Base = declarative_base()
 
 
@@ -91,12 +93,25 @@ class CDatabase(object):
             self.session.commit()
 
 
+    def get_event_data(self, pid):
+        """Возвращает данные события в словаре."""
+        event_dict = dict()
+        event_data = self.session.query(CEvent).filter_by(id=pid).first()
+        event_dict["fname"] = event_data[1]
+        event_dict["fdate"] = datetime.date(event_data[4],
+                                            event_data[3],
+                                            event_data[2])
+        event_dict["ftype"] = event_data[5]
+        print("!!1 ", event_dict)
+        return event_dict
+    
+    
     def get_events_list(self):
         """Возвращает события из базы."""
         event_name_list = []
         event_id_list = []
         queried_data = self.session.query(CEvent).order_by(CEvent.ftype, CEvent.fname)
-        print("$$$$ ",queried_data)
+        #print("$$$$ ",queried_data)
         for event in queried_data: 
             
             event_name_list.append(event.fname)
