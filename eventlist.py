@@ -10,9 +10,10 @@ import eventeditor as eved
 
 class EventList(tk.Toplevel):
     """Класс окна списка событий."""
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, pdatabase, **kwargs):
         """Конструктор."""
         tk.Toplevel.__init__(self, master, **kwargs)
+        self.database = pdatabase
         self.construct_window()
    
    
@@ -58,7 +59,9 @@ class EventList(tk.Toplevel):
     
     def insert_event(self):
         """Добавляет новое событие в базу."""
-        event_editor = eved.EventEditor(self, None)
+        event_editor = eved.EventEditor(self,
+                                        pdatabase=self.database,
+                                        pid=None)
 
 
     def load_data(self):

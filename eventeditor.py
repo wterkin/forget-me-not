@@ -4,9 +4,10 @@ import tkinter as tk
 import tkcalendar as tkcal
 
 class EventEditor(tk.Toplevel):
-    def __init__(self, pmaster, pid, **kwargs):
+    def __init__(self, pmaster, pdatabase, pid, **kwargs):
         tk.Toplevel.__init__(self, pmaster, **kwargs)
         self.master = pmaster
+        self.database = pdatabase
         self.id = pid
         self.construct_window()
         if self.id is not None:
@@ -52,11 +53,11 @@ class EventEditor(tk.Toplevel):
 
         # *** Кнопки 
         self.buttons_frame = tk.Frame(self)
-        self.ok_button = tk.Button(command=self.quit,
+        self.ok_button = tk.Button(command=self.save,
                                    master=self.buttons_frame,
                                    text="Принять")
         self.ok_button.pack(side=tk.LEFT)
-        self.cancel_button = tk.Button(command=self.quit,
+        self.cancel_button = tk.Button(command=self.close,
                                        master=self.buttons_frame,
                                        text="Отмена")
         self.cancel_button.pack(side=tk.RIGHT)
@@ -71,6 +72,9 @@ class EventEditor(tk.Toplevel):
         """Процедура загрузки данных в контролы."""
         pass
     
+    def save_data(self):
+        """Сохраняет введённые данные."""
+        self.database.insert_event()
     
 if __name__ == '__main__':
     root = tk.Tk()  

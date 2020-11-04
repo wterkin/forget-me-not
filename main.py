@@ -82,7 +82,8 @@ class MainWindow(tk.Frame):
 
     def event_list(self):
         """Создает и открывает окно списка событий."""
-        event_list = evlst.EventList(self)
+        event_list = evlst.EventList(master=self,
+                                     pdatabase=self.database)
         
         
     def quit_program(self):

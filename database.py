@@ -49,6 +49,15 @@ class CEvent(Base):
                    nullable=False)    
     ftype = Column(Integer, ForeignKey(CEventType.id))
 
+    def __init__(self, pname, pdate, ptype):
+        """Конструктор."""
+        self.fname = pname
+        self.fday = pdate.day
+        self.fmonth = pdate.month
+        self.fyear = pdate.year
+        self.ftype = ptype
+
+
 
 class CDatabase(object):
     """Класс осуществляет работу с БД."""
@@ -90,3 +99,10 @@ class CDatabase(object):
             event_name_list.append(event.name)
             event_id_list.append(event.id)
         return event_id_list, event_name_list
+
+
+    def insert_event(self, pname, pdate, ptype):
+        """Добавляет новое событие в БД."""
+        event = CEvent(pname, pdate, ptype)
+        self.session.add(event)
+        self.session.commit()
