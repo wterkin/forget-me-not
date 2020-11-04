@@ -4,10 +4,16 @@ import tkinter as tk
 import tkcalendar as tkcal
 
 class EventEditor(tk.Toplevel):
-    def __init__(self, pmaster, **kwargs):
+    def __init__(self, pmaster, pid, **kwargs):
         tk.Toplevel.__init__(self, pmaster, **kwargs)
-        #self.master = pmaster
+        self.master = pmaster
+        self.id = pid
+        self.construct_window()
+        if self.id is not None:
+            self.load_data()
         
+    def construct_window(self):
+        """Создает интерфейс окна."""
         # *** Наименование события
         self.event_name_frame = tk.Frame(self)
         self.event_name_entry = tk.Entry(self.event_name_frame,
@@ -56,11 +62,16 @@ class EventEditor(tk.Toplevel):
         self.cancel_button.pack(side=tk.RIGHT)
         self.buttons_frame.pack(padx=10,
                                 pady=10)
-        self.transient(pmaster)
+        self.transient(self.master)
         self.grab_set()
-        pmaster.wait_window(self)
+        self.master.wait_window(self)
         
         
+    def load_data(self):
+        """Процедура загрузки данных в контролы."""
+        pass
+    
+    
 if __name__ == '__main__':
     root = tk.Tk()  
     event_editor = EventEditor(root)

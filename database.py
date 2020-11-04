@@ -39,6 +39,8 @@ class CEvent(Base):
                 nullable=False,
                 primary_key=True,
                 unique=True)
+    fname = Column(String,
+                    nullable=False)
     fday = Column(Integer,
                   nullable=False)
     fmonth = Column(Integer,
@@ -78,4 +80,13 @@ class CDatabase(object):
             self.session.add(event_type)
             self.session.commit()
 
-    
+
+    def get_events_list(self):
+        """Возвращает события из базы."""
+        event_name_list = []
+        event_id_list = []
+        for event in self.session.query(CEvent).order_by(CEvent.ftype, CEvent.fname): 
+            
+            event_name_list.append(event.name)
+            event_id_list.append(event.id)
+        return event_id_list, event_name_list

@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import tkinter as tk
+
+import database as db
 import eventeditor as eved
+
 
 
 class EventList(tk.Toplevel):
@@ -14,6 +17,7 @@ class EventList(tk.Toplevel):
    
    
     def construct_window(self):
+        """Создает интерфейс окна."""
         # *** Фрейм кнопок
         self.list_buttons_frame = tk.Frame(self)
         self.add_button = tk.Button(command=self.insert_event,
@@ -45,21 +49,27 @@ class EventList(tk.Toplevel):
         self.transient(master)
         self.grab_set()
         master.wait_window(self)
+   
+
+    def delete_event(self):
+        """Удаляет выбранное событие."""
+        pass
 
     
     def insert_event(self):
         """Добавляет новое событие в базу."""
-        event_editor = eved.EventEditor(self)
+        event_editor = eved.EventEditor(self, None)
 
 
-    
+    def load_data(self):
+        """Обновляет данные в списке."""
+        self.event_id_list, self.event_name_list = db.get_events_list()
+        for name in self.event_name_list:
+            self.events_box.insert(tk.end, name)
+
+
     def update_event(self):
         """Изменяет уже существующее событие."""
-        pass
-
-    
-    def delete_event(self):
-        """Удаляет выбранное событие."""
         pass
 
     
