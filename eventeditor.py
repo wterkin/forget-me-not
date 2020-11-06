@@ -12,7 +12,13 @@ class EventEditor(tk.Toplevel):
         self.id = pid
         self.construct_window()
         if self.id is not None:
+
             self.load_data()
+        else:
+
+            # *** Загрузим список типов событий
+            self.load_event_types_list()
+            
         self.transient(self.master)
         self.grab_set()
         self.master.wait_window(self)
@@ -37,10 +43,10 @@ class EventEditor(tk.Toplevel):
         self.event_type_box = tk.Listbox(self.event_type_frame,
                                          height=4,
                                          width=20)
-        self.event_type_box.insert(0, "День памяти")
-        self.event_type_box.insert(1, "День рождения")
-        self.event_type_box.insert(2, "Памятная дата")
-        self.event_type_box.insert(3, "Напоминание")
+        #self.event_type_box.insert(0, "День памяти")
+        #self.event_type_box.insert(1, "День рождения")
+        #self.event_type_box.insert(2, "Памятная дата")
+        #self.event_type_box.insert(3, "Напоминание")
         self.event_type_box.pack()
         self.event_type_frame.pack(padx=10,
                                    pady=10)
@@ -69,18 +75,25 @@ class EventEditor(tk.Toplevel):
         self.buttons_frame.pack(padx=10,
                                 pady=10)
         
-        
     
     def load_data(self):
         """Процедура загрузки данных в контролы."""
-        lname, ltype, ldate = self.database.get_event_data(self.id)
-        print(ltype)
+        # *** Загрузим список типов событий
+        self.load_event_types_list()
+        lname, ldate, ltype = self.database.get_event_data(self.id)
         self.event_name_entry.insert(tk.END, lname)
         self.event_date_entry.set_date(ldate)
-        self.event_type_box.select_set(self.event_id_list.index(ltype))
-        #self.event_id_list, self.event_name_list = self.database.get_events_list()
-        #for name in self.event_name_list:
-            #self.events_box.insert(tk.END, name)
+        #event_type_order = event_types_id_list.index(ltype)
+        #ident = self.event_id_list[selected_items[0]]
+        self.event_type_box.select_set(self.event_types_id_list.index(ltype))
+    
+    
+    def load_event_types_list(self):
+        """Загружает список типов событий в listbox."""
+        self.event_types_id_list, event_types_name_list = self.database.get_event_types_list()
+        print("*** EE: etnl ", event_types_name_list)
+        for name in event_types_name_list:
+            self.event_type_box.insert(tk.END, name)
     
     
     def save_data(self):
@@ -90,10 +103,15 @@ class EventEditor(tk.Toplevel):
         selected_items = self.event_type_box.curselection()
         #date_dt3 = datetime.strptime(date_str3, '%m-%d-%Y')
         #print("^^^^^ ", self.event_date_entry.get())
-        self.database.insert_event(self.event_name_entry.get().strip(),
-                                   date_date,
-                                   selected_items[0])
+        # !!! FixMe: почему-то инсертит при редактировании
+        if self.id is None:
+            self.database.insert_event(self.event_name_entry.get().strip(),
+                                    date_date,
+                                    self.event_types_id_list[selected_items[0]])
+        else:
+            pass
         self.destroy()
+    
     
 if __name__ == '__main__':
     root = tk.Tk()  

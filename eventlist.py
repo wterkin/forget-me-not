@@ -64,6 +64,7 @@ class EventList(tk.Toplevel):
         event_editor = eved.EventEditor(self,
                                         pdatabase=self.database,
                                         pid=None)
+        self.load_data()
 
 
     def load_data(self):
@@ -80,6 +81,7 @@ class EventList(tk.Toplevel):
         event_editor = eved.EventEditor(self,
                                         pdatabase=self.database,
                                         pid=ident)
+        self.load_data()
         pass
 
     

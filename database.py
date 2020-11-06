@@ -98,15 +98,15 @@ class CDatabase(object):
         """Возвращает данные события в словаре."""
         #event_dict = dict()
         event_data = self.session.query(CEvent.fname,
-                                        CEvent.ftype,
                                         CEvent.fyear,
                                         CEvent.fmonth,
-                                        CEvent.fday).filter_by(id=pid).first()
+                                        CEvent.fday,
+                                        CEvent.ftype).filter_by(id=pid).first()
         return (event_data.fname,
-                event_data.ftype,
                 dt.date(event_data.fyear,
                         event_data.fmonth,
-                        event_data.fday))
+                        event_data.fday),
+                event_data.ftype)
     
     
     def get_events_list(self):
@@ -122,8 +122,36 @@ class CDatabase(object):
         return event_id_list, event_name_list
 
 
+    def get_event_types_list(self):
+        """Возвращает события из базы."""
+        event_types_name_list = []
+        event_types_id_list = []
+        queried_data = self.session.query(CEventType).order_by(CEventType.fname)
+        for event_type in queried_data: 
+            
+            event_types_name_list.append(event_type.fname)
+            event_types_id_list.append(event_type.id)
+        return event_types_id_list, event_types_name_list
+
+    
+
     def insert_event(self, pname, pdate, ptype):
         """Добавляет новое событие в БД."""
         event = CEvent(pname, pdate, ptype)
         self.session.add(event)
+        self.session.commit()
+
+
+    def update_event(self, pid, pname, pdate, ptype):
+        """Изменяет уже существующее событие в БД."""
+        event_data = self.session.query(CEvent.fname,
+                                        CEvent.fyear,
+                                        CEvent.fmonth,
+                                        CEvent.fday,
+                                        CEvent.ftype).filter_by(id=pid).first()
+        event_data.fname = pname
+        event_data.fyear = pdate.year
+        event_data.fmonth = pdate.month
+        event_data.fday = pdate.day
+        event_data.ftype = ptype
         self.session.commit()
