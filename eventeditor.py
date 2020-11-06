@@ -43,10 +43,6 @@ class EventEditor(tk.Toplevel):
         self.event_type_box = tk.Listbox(self.event_type_frame,
                                          height=4,
                                          width=20)
-        #self.event_type_box.insert(0, "День памяти")
-        #self.event_type_box.insert(1, "День рождения")
-        #self.event_type_box.insert(2, "Памятная дата")
-        #self.event_type_box.insert(3, "Напоминание")
         self.event_type_box.pack()
         self.event_type_frame.pack(padx=10,
                                    pady=10)
@@ -78,15 +74,11 @@ class EventEditor(tk.Toplevel):
     
     def load_data(self):
         """Процедура загрузки данных в контролы."""
-        # *** Загрузим список типов событий
         self.load_event_types_list()
-        lname, ldate, ltype = self.database.get_event_data(self.id)
+        lname, ldate, self.event_type = self.database.get_event_data(self.id)
         self.event_name_entry.insert(tk.END, lname)
         self.event_date_entry.set_date(ldate)
-        #event_type_order = event_types_id_list.index(ltype)
-        #ident = self.event_id_list[selected_items[0]]
-        #print("*** EvEd: si ", ltype, self.event_types_id_list.index(ltype))
-        self.event_type_box.select_set(self.event_types_id_list.index(ltype))
+        self.event_type_box.select_set(self.event_types_id_list.index(self.event_type))
     
     
     def load_event_types_list(self):
@@ -99,20 +91,27 @@ class EventEditor(tk.Toplevel):
     
     def save_data(self):
         """Сохраняет введённые данные."""
-        date_str = self.event_date_entry.get()
-        date_date = datetime.strptime(date_str, "%d.%m.%Y")
-        selected_items = self.event_type_box.curselection()
-        #date_dt3 = datetime.strptime(date_str3, '%m-%d-%Y')
+        ldate_date = datetime.strptime(self.event_date_entry.get(), "%d.%m.%Y")
+        lselected_items = self.event_type_box.curselection()
+        # *** Если внезапно в листбоксе нет выбранного элемента - используем сохраненный ID
+        if len(lselected_items) == 0:
+        
+            ltype = self.event_type
+        else:
+            
+            ltype = self.event_types_id_list[lselected_items[0]]
+        
         if self.id is None:
 
             self.database.insert_event(self.event_name_entry.get().strip(),
-                                    date_date,
-                                    self.event_types_id_list[selected_items[0]])
+                                       ldate_date,
+                                       ltype)
         else:
+
             self.database.update_event(self.id, 
                                        self.event_name_entry.get().strip(),
-                                       date_date,
-                                       self.event_types_id_list[selected_items[0]])
+                                       ldate_date,
+                                       ltype)
                                        
         self.destroy()
     
