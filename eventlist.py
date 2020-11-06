@@ -69,6 +69,7 @@ class EventList(tk.Toplevel):
 
     def load_data(self):
         """Обновляет данные в списке."""
+        self.events_box.delete(0, tk.END)
         self.event_id_list, self.event_name_list = self.database.get_events_list()
         for name in self.event_name_list:
             self.events_box.insert(tk.END, name)
@@ -82,7 +83,6 @@ class EventList(tk.Toplevel):
                                         pdatabase=self.database,
                                         pid=ident)
         self.load_data()
-        pass
 
     
 if __name__ == '__main__':

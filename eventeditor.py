@@ -68,7 +68,7 @@ class EventEditor(tk.Toplevel):
                                    master=self.buttons_frame,
                                    text="Принять")
         self.ok_button.pack(side=tk.LEFT)
-        self.cancel_button = tk.Button(command=self.quit,
+        self.cancel_button = tk.Button(command=self.destroy,
                                        master=self.buttons_frame,
                                        text="Отмена")
         self.cancel_button.pack(side=tk.RIGHT)
@@ -85,13 +85,14 @@ class EventEditor(tk.Toplevel):
         self.event_date_entry.set_date(ldate)
         #event_type_order = event_types_id_list.index(ltype)
         #ident = self.event_id_list[selected_items[0]]
+        #print("*** EvEd: si ", ltype, self.event_types_id_list.index(ltype))
         self.event_type_box.select_set(self.event_types_id_list.index(ltype))
     
     
     def load_event_types_list(self):
         """Загружает список типов событий в listbox."""
         self.event_types_id_list, event_types_name_list = self.database.get_event_types_list()
-        print("*** EE: etnl ", event_types_name_list)
+        #print("*** EE: etnl ", event_types_name_list)
         for name in event_types_name_list:
             self.event_type_box.insert(tk.END, name)
     
@@ -102,14 +103,17 @@ class EventEditor(tk.Toplevel):
         date_date = datetime.strptime(date_str, "%d.%m.%Y")
         selected_items = self.event_type_box.curselection()
         #date_dt3 = datetime.strptime(date_str3, '%m-%d-%Y')
-        #print("^^^^^ ", self.event_date_entry.get())
-        # !!! FixMe: почему-то инсертит при редактировании
         if self.id is None:
+
             self.database.insert_event(self.event_name_entry.get().strip(),
                                     date_date,
                                     self.event_types_id_list[selected_items[0]])
         else:
-            pass
+            self.database.update_event(self.id, 
+                                       self.event_name_entry.get().strip(),
+                                       date_date,
+                                       self.event_types_id_list[selected_items[0]])
+                                       
         self.destroy()
     
     

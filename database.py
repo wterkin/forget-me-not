@@ -52,6 +52,7 @@ class CEvent(Base):
                    nullable=False)    
     ftype = Column(Integer, ForeignKey(CEventType.id))
 
+
     def __init__(self, pname, pdate, ptype):
         """Конструктор."""
         self.fname = pname
@@ -133,7 +134,6 @@ class CDatabase(object):
             event_types_id_list.append(event_type.id)
         return event_types_id_list, event_types_name_list
 
-    
 
     def insert_event(self, pname, pdate, ptype):
         """Добавляет новое событие в БД."""
@@ -144,14 +144,22 @@ class CDatabase(object):
 
     def update_event(self, pid, pname, pdate, ptype):
         """Изменяет уже существующее событие в БД."""
-        event_data = self.session.query(CEvent.fname,
-                                        CEvent.fyear,
-                                        CEvent.fmonth,
-                                        CEvent.fday,
-                                        CEvent.ftype).filter_by(id=pid).first()
-        event_data.fname = pname
-        event_data.fyear = pdate.year
-        event_data.fmonth = pdate.month
-        event_data.fday = pdate.day
-        event_data.ftype = ptype
+        #event_data = self.session.query(CEvent.fname,
+                                        #CEvent.fyear,
+                                        #CEvent.fmonth,
+                                        #CEvent.fday,
+                                        #CEvent.ftype).filter_by(id=pid).first()
+        #session.query(Customers).filter(Customers.id! = 2).
+        event_data = self.session.query(CEvent).filter_by(id=pid) #.first()
+        event_data.update({CEvent.fname:pname,
+                           CEvent.fyear:pdate.year,
+                           CEvent.fmonth:pdate.month,
+                           CEvent.fday:pdate.day,
+                           CEvent.ftype:ptype}, synchronize_session = False)
+        #event_data.fname = pname
+        #event_data.fyear = pdate.year
+        #event_data.fmonth = pdate.month
+        #event_data.fday = pdate.day
+        #event_data.ftype = ptype
+        #rows = Stat.query.filter_by(user_id = u_id).update({'user_id': 1})
         self.session.commit()
