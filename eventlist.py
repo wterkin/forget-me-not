@@ -82,11 +82,12 @@ class EventList(tk.Toplevel):
     def update_event(self):
         """Изменяет уже существующее событие."""
         selected_items = self.events_box.curselection()
-        event_ident = self.event_id_list[selected_items[0]]
-        event_editor = eved.EventEditor(self,
-                                        pdatabase=self.database,
-                                        pid=event_ident)
-        self.load_data()
+        if len(selected_items) > 0:
+            event_ident = self.event_id_list[selected_items[0]]
+            event_editor = eved.EventEditor(self,
+                                            pdatabase=self.database,
+                                            pid=event_ident)
+            self.load_data()
 
     
 if __name__ == '__main__':

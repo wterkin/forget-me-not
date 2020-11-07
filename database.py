@@ -89,13 +89,13 @@ class CDatabase(object):
         count = self.session.query(CEventType).count()
         if count == 0:
 
-            event_type = CEventType("☦️День памяти ", "#8db0bd")
+            event_type = CEventType("День памяти ", "#8db0bd")  #☦️
             self.session.add(event_type)
-            event_type = CEventType("🎂 День рождения ", "#ecc176")
+            event_type = CEventType("День рождения ", "#ecc176")  # 🎂 
             self.session.add(event_type)
-            event_type = CEventType("📆 Памятная дата - ", "#02b6ec")
+            event_type = CEventType("Памятная дата - ", "#02b6ec")  #📆 
             self.session.add(event_type)
-            event_type = CEventType("🔔 Напоминание: ", "#6dec04")
+            event_type = CEventType("Напоминание: ", "#6dec04")  #🔔 
             self.session.add(event_type)
             self.session.commit()
 
@@ -113,10 +113,9 @@ class CDatabase(object):
                                         CEvent.fyear,
                                         CEvent.fmonth,
                                         CEvent.fday,
-                                        CEvent.ftype,
-                                        CEventType.fname). \
-                                  innerjoin(CEventType,CEvent.ftype). \
+                                        CEvent.ftype).\
                                   filter_by(id=pid).first()
+                                  #join(CEventType,CEvent.ftype).\
         return (event_data.fname,
                 dt.date(event_data.fyear,
                         event_data.fmonth,
