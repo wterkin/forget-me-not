@@ -24,7 +24,7 @@ class MainWindow(tk.Frame):
         self.config = cfg.Configuration()
         self.database = db.CDatabase(self.config.restore_value(cfg.DATABASE_FILE_KEY))
         if not self.is_database_exists():
-            self.database.migrate()
+            self.database.create_database()
             
         self.construct_window()
 
@@ -38,11 +38,11 @@ class MainWindow(tk.Frame):
     def construct_window(self):
         """Создает интерфейс окна."""
         self.master.title(MAIN_WINDOW_TITLE)
-        #! self.style = Style()
-        #! self.style.theme_use("default")
+        self.style = Style()
+        self.style.theme_use("default")
         #self.pack(fill=BOTH, expand=1)
         self.pack()
-        #! self.centerWindow()
+        self.centerWindow()
         
         self.toolbar_frame = tk.Frame(self.master)
         self.event_list_button = tk.Button(self.toolbar_frame, text="Список событий", command=self.event_list)
@@ -58,7 +58,6 @@ class MainWindow(tk.Frame):
         self.scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
         self.text.config(yscrollcommand=self.scroll_bar.set)
         #self.text.insert(1.0, "Hello world!\nline two")
- 
         #self.text.tag_add('title', 1.0, '1.end')
         #self.text.tag_config('title', justify=CENTER,
                         #font=("Verdana", 24, 'bold'))

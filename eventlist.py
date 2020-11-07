@@ -49,14 +49,18 @@ class EventList(tk.Toplevel):
         self.events_frame = tk.Frame(self)
         self.events_box = tk.Listbox(self.events_frame)  #! , width=20, height=4)
         self.events_box.pack()
-        #elf.event_type_box.curselection()
         self.events_frame.pack(padx=10, pady=10)
 
    
 
     def delete_event(self):
         """Удаляет выбранное событие."""
-        pass
+        selected_items = self.events_box.curselection()
+        if len(selected_items) > 0:
+
+            event_ident = self.event_id_list[selected_items[0]]
+            self.database.update_event(event_ident)
+            self.load_data()
 
     
     def insert_event(self):
@@ -71,17 +75,17 @@ class EventList(tk.Toplevel):
         """Обновляет данные в списке."""
         self.events_box.delete(0, tk.END)
         self.event_id_list, self.event_name_list = self.database.get_events_list()
-        for name in self.event_name_list:
-            self.events_box.insert(tk.END, name)
+        for event_name in self.event_name_list:
+            self.events_box.insert(tk.END, event_name)
 
 
     def update_event(self):
         """Изменяет уже существующее событие."""
         selected_items = self.events_box.curselection()
-        ident = self.event_id_list[selected_items[0]]
+        event_ident = self.event_id_list[selected_items[0]]
         event_editor = eved.EventEditor(self,
                                         pdatabase=self.database,
-                                        pid=ident)
+                                        pid=event_ident)
         self.load_data()
 
     
