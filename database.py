@@ -37,6 +37,29 @@ class CEventType(Base):
                    Color:{self.fcolor},
                    Status:{self.fstatus}"""
 
+class CPeriod(Base):
+    __tablename__ = 'tbl_periods'
+    id = Column(Integer,
+                autoincrement=True,
+                nullable=False,
+                primary_key=True,
+                unique=True)
+    ffreq = Column(Integer,
+                   nullable=False)
+    fstatus = Column(Integer,
+                     nullable=False)
+    def __init__(self, pfreq):
+        
+        self.ffreq = pfreq
+        self.fstatus = 1
+    
+    def __repr__(self):
+        
+        return f"""ID:{self.id},
+                   Freq:{self.ffreq},
+                   Status:{self.fstatus}"""
+
+
     
 class CEvent(Base):
     __tablename__ = 'tbl_events'    
@@ -54,7 +77,8 @@ class CEvent(Base):
     fyear = Column(Integer,
                    nullable=False)    
     ftype = Column(Integer, ForeignKey(CEventType.id))
-
+    freq = Column(Integer, ForeignKey(CPeriod.id))
+	
 
     def __init__(self, pname, pdate, ptype):
         """Конструктор."""

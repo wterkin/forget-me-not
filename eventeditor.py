@@ -10,6 +10,7 @@ class EventEditor(tk.Toplevel):
         self.master = pmaster
         self.database = pdatabase
         self.id = pid
+        self.event_period_var = 0
         self.construct_window()
         if self.id is not None:
 
@@ -38,12 +39,27 @@ class EventEditor(tk.Toplevel):
         self.event_name_frame.pack(padx=10,
                                    pady=10)
 
-        # *** Тип события 
+        # *** Тип и период события
         self.event_type_frame = tk.Frame(self)
         self.event_type_box = tk.Listbox(self.event_type_frame,
                                          height=4,
                                          width=20)
-        self.event_type_box.pack()
+        self.event_type_box.pack(side=tk.LEFT)
+        self.period_monthly_rb = tk.Radiobutton(indicatoron=1,
+                                          master=self.event_type_frame,
+                                          text="Ежемесячно",
+                                          value=0,
+                                          variable=self.event_period_var
+                                          )
+        self.period_monthly_rb.pack(side=tk.RIGHT)  # anchor=tk.W)
+        self.period_yearly_rb = tk.Radiobutton(indicatoron=1,
+                                          master=self.event_type_frame,
+                                          text="Ежегодно  ",
+                                          value=1,
+                                          variable=self.event_period_var
+                                          )
+        self.period_yearly_rb.pack(side=tk.RIGHT)  # anchor=W)
+        
         self.event_type_frame.pack(padx=10,
                                    pady=10)
       
