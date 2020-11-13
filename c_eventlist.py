@@ -3,8 +3,9 @@
 
 import tkinter as tk
 
-import database as db
-import eventeditor as eved
+# import database as db
+# from fmn_app 
+import c_eventeditor as eved
 
 
 

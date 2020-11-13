@@ -8,6 +8,7 @@ CONFIG_FOLDER = ".config/forget-me-not/"
 CONFIG_FILE_NAME = "forget-me-not.json"
 DATABASE_FILE_NAME = "forget-me-not.db"
 DATABASE_FILE_KEY = "database_file_name"
+
 class Configuration(object):
     """Класс конфигурации программы"""
     def __init__(self):

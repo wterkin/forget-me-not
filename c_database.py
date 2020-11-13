@@ -7,8 +7,21 @@ from sqlalchemy.orm import sessionmaker
 
 import datetime as dt
 
-Base = declarative_base()
+convention = {
+              "all_column_names": lambda constraint,
+                                  table: "_".join([
+                                    column.name for column in constraint.columns.values()
+                                  ]),
+              "ix": "ix__%(table_name)s__%(all_column_names)s",
+              "uq": "uq__%(table_name)s__%(all_column_names)s",
+              "cq": "cq__%(table_name)s__%(constraint_name)s",
+              "fk": ("fk__%(table_name)s__%(all_column_names)s__"
+                     "%(referred_table_name)s"),
+              "pk": "pk__%(table_name)s"       
+}
 
+meta_data = MetaData(naming_convention = convention)
+Base = declarative_base(metadata=meta_data)
 
 class CEventType(Base):
     __tablename__ = 'tbl_types'
@@ -22,8 +35,10 @@ class CEventType(Base):
                     unique=True)
     fcolor = Column(String,
                     nullable=False)
+    femodji = Column(String,
+                     nullable=False)
     fstatus = Column(Integer,
-                        nullable=False)
+                     nullable=False)
     def __init__(self, pname, pcolor):
         
         self.fname = pname
@@ -37,6 +52,7 @@ class CEventType(Base):
                    Color:{self.fcolor},
                    Status:{self.fstatus}"""
 
+
 class CPeriod(Base):
     __tablename__ = 'tbl_periods'
     id = Column(Integer,
@@ -44,23 +60,22 @@ class CPeriod(Base):
                 nullable=False,
                 primary_key=True,
                 unique=True)
-    ffreq = Column(Integer,
-                   nullable=False)
+    fperiod = Column(Integer,
+                     nullable=False)
     fstatus = Column(Integer,
                      nullable=False)
-    def __init__(self, pfreq):
-        
-        self.ffreq = pfreq
+
+    def __init__(self, pperiod):
+        """Конструктор."""
+        self.fperiod = pperiod
         self.fstatus = 1
     
     def __repr__(self):
-        
         return f"""ID:{self.id},
-                   Freq:{self.ffreq},
+                   Freq:{self.fperiod},
                    Status:{self.fstatus}"""
 
-
-    
+   
 class CEvent(Base):
     __tablename__ = 'tbl_events'    
     id = Column(Integer,
@@ -77,8 +92,8 @@ class CEvent(Base):
     fyear = Column(Integer,
                    nullable=False)    
     ftype = Column(Integer, ForeignKey(CEventType.id))
-    freq = Column(Integer, ForeignKey(CPeriod.id))
-	
+    fperiod = Column(Integer, ForeignKey(CPeriod.id))
+    
 
     def __init__(self, pname, pdate, ptype):
         """Конструктор."""
@@ -102,7 +117,11 @@ class CDatabase(object):
     def __init__(self, pdatabase_path):
         """Конструктор."""
         self.engine = create_engine('sqlite:///'+pdatabase_path)
-        self.session = sessionmaker(bind=self.engine)()
+        Session = sessionmaker()
+        Session.configure(bind=self.engine)
+        self.session = Session()
+        
+        #self.session = sessionmaker(bind=self.engine)()
         Base.metadata.bind = self.engine
         #self.session.configure(bind=self.engine)
 

@@ -5,13 +5,14 @@
 #from tkinter import *
 from tkinter.ttk  import Style
 import tkinter as tk
-#import pathlib
 from pathlib import Path
 
-import config as cfg
-import database as db
-import eventeditor as eved
-import eventlist as evlst
+#from fmn_app 
+import c_config as cfg
+#from fmn_app 
+import c_database as db
+#from fmn_app 
+import c_eventlist as evlst
 
 MAIN_WINDOW_TITLE = "Forget-Me-Not version 0,1"
 MAIN_WINDOW_WIDTH = 640 
