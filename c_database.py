@@ -36,7 +36,7 @@ class CEventType(Base):
     fcolor = Column(String,
                     nullable=False)
     femodji = Column(String,
-                     nullable=False)
+                     nullable=True)
     fstatus = Column(Integer,
                      nullable=False)
     def __init__(self, pname, pcolor):
