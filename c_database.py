@@ -2,115 +2,15 @@
 ## -*- coding: utf-8 -*-
 
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, create_engine
-from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 import datetime as dt
 
-convention = {
-              "all_column_names": lambda constraint,
-                                  table: "_".join([
-                                    column.name for column in constraint.columns.values()
-                                  ]),
-              "ix": "ix__%(table_name)s__%(all_column_names)s",
-              "uq": "uq__%(table_name)s__%(all_column_names)s",
-              "cq": "cq__%(table_name)s__%(constraint_name)s",
-              "fk": ("fk__%(table_name)s__%(all_column_names)s__"
-                     "%(referred_table_name)s"),
-              "pk": "pk__%(table_name)s"       
-}
-
-meta_data = MetaData(naming_convention = convention)
-Base = declarative_base(metadata=meta_data)
-
-class CEventType(Base):
-    __tablename__ = 'tbl_types'
-    id = Column(Integer,
-                autoincrement=True,
-                nullable=False,
-                primary_key=True,
-                unique=True)
-    fname = Column(String,
-                    nullable=False,
-                    unique=True)
-    fcolor = Column(String,
-                    nullable=False)
-    femodji = Column(String,
-                     nullable=True)
-    fstatus = Column(Integer,
-                     nullable=False)
-    def __init__(self, pname, pcolor):
-        
-        self.fname = pname
-        self.fcolor = pcolor
-        self.fstatus = 1
-    
-    def __repr__(self):
-        
-        return f"""ID:{self.id},
-                   Name:{self.fname},
-                   Color:{self.fcolor},
-                   Status:{self.fstatus}"""
-
-
-class CPeriod(Base):
-    __tablename__ = 'tbl_periods'
-    id = Column(Integer,
-                autoincrement=True,
-                nullable=False,
-                primary_key=True,
-                unique=True)
-    fperiod = Column(Integer,
-                     nullable=False)
-    fstatus = Column(Integer,
-                     nullable=False)
-
-    def __init__(self, pperiod):
-        """Конструктор."""
-        self.fperiod = pperiod
-        self.fstatus = 1
-    
-    def __repr__(self):
-        return f"""ID:{self.id},
-                   Freq:{self.fperiod},
-                   Status:{self.fstatus}"""
-
-   
-class CEvent(Base):
-    __tablename__ = 'tbl_events'    
-    id = Column(Integer,
-                autoincrement=True,
-                nullable=False,
-                primary_key=True,
-                unique=True)
-    fname = Column(String,
-                    nullable=False)
-    fday = Column(Integer,
-                  nullable=False)
-    fmonth = Column(Integer,
-                    nullable=False)    
-    fyear = Column(Integer,
-                   nullable=False)    
-    ftype = Column(Integer, ForeignKey(CEventType.id))
-    fperiod = Column(Integer, ForeignKey(CPeriod.id))
-    
-
-    def __init__(self, pname, pdate, ptype):
-        """Конструктор."""
-        self.fname = pname
-        self.fday = pdate.day
-        self.fmonth = pdate.month
-        self.fyear = pdate.year
-        self.ftype = ptype
-
-    def __repr__(self):
-        
-        return f"""ID:{self.id}, 
-                   Name:{self.fname}, 
-                   Date:{self.fday}.{self.fmonth}.{self.fyear}, 
-                   Type:{self.ftype},
-                   Status:{self.fstatus}"""
-
+import c_ancestor
+import c_eventtype
+import c_period
+import c_event   
 
 class CDatabase(object):
     """Класс осуществляет работу с БД."""
