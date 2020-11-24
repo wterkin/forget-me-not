@@ -2,6 +2,8 @@
 ## -*- coding: utf-8 -*-
 """Модуль класса события."""
 
+from sqlalchemy import Table, Column, Integer, String, ForeignKey, create_engine
+
 import c_eventtype
 import c_period
 

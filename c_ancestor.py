@@ -2,6 +2,7 @@
 ## -*- coding: utf-8 -*-
 """Модуль класса-предка классов таблиц Alchemy"""
 
+from sqlalchemy import Table, Column, Integer, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 
 convention = {
@@ -21,8 +22,8 @@ meta_data = MetaData(naming_convention = convention)
 Base = declarative_base(metadata=meta_data)
 
 class CAncestor(Base):
-	"""Класс-предок всех классов-таблиц Alchemy."""
-	__abstract__ = True
+    """Класс-предок всех классов-таблиц Alchemy."""
+    __abstract__ = True
     id = Column(Integer,
                 autoincrement=True,
                 nullable=False,
@@ -32,11 +33,11 @@ class CAncestor(Base):
                      nullable=False)
 
     def __init__(self, pstatus):
-		"""Конструктор."""
+        """Конструктор."""
         self.fstatus = fstatus
         
     def __repr__(self):
         
         return f"""ID:{self.id},
                    Status:{self.fstatus}"""
-	
+    

@@ -2,6 +2,8 @@
 ## -*- coding: utf-8 -*-
 """Модуль класса периода события Alchemy"""
 
+from sqlalchemy import Table, Column, Integer
+
 import c_ancestor
 
 class CPeriod(CAncestor):

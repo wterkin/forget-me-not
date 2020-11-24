@@ -2,10 +2,11 @@
 ## -*- coding: utf-8 -*-
 """Модуль класса типа события Alchemy"""
 
-import c_ancestor
+from sqlalchemy import Table, Column, String
+import c_ancestor as anc
 
-class CEventType(CAncestor):
-	"""Класс типов событий."""
+class CEventType(anc.CAncestor):
+    """Класс типов событий."""
 
     __tablename__ = 'tbl_types'
     fname = Column(String,
@@ -21,11 +22,12 @@ class CEventType(CAncestor):
         super().__init__(pstatus)
         self.fname = pname
         self.fcolor = pcolor
-		self.femodji = pemodji
-		
+        self.femodji = pemodji
+        
     def __repr__(self):
-	    return super().__repr__() +
-			   f"""Name:{self.fname},
+        ancestor_repr = super().__repr__()
+        return f"""{ancestor_repr}
+                   Name:{self.fname},
                    Color:{self.fcolor},
                    Emodji:{self.femodji}"""
 

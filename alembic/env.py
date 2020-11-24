@@ -12,6 +12,10 @@ path.insert(0, "D:/home/projects/python/forget_me_not/")
 # path.insert(0, "/media/data/projects/forget_me_not/")
 
 #from fmn_app 
+import c_ancestor
+import c_event
+import c_eventtype
+import c_period
 import c_database as db
 
 # this is the Alembic Config object, which provides
