@@ -13,9 +13,9 @@ path.insert(0, "D:/home/projects/python/forget_me_not/")
 
 #from fmn_app 
 import c_ancestor
-import c_event
 import c_eventtype
 import c_period
+import c_event
 import c_database as db
 
 # this is the Alembic Config object, which provides
@@ -30,7 +30,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = db.meta_data 
+target_metadata = c_ancestor.meta_data 
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

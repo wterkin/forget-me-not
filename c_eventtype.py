@@ -26,7 +26,7 @@ class CEventType(anc.CAncestor):
         
     def __repr__(self):
         ancestor_repr = super().__repr__()
-        return f"""{ancestor_repr}
+        return f"""{ancestor_repr},
                    Name:{self.fname},
                    Color:{self.fcolor},
                    Emodji:{self.femodji}"""

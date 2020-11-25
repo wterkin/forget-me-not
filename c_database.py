@@ -22,41 +22,41 @@ class CDatabase(object):
         self.session = Session()
         
         #self.session = sessionmaker(bind=self.engine)()
-        Base.metadata.bind = self.engine
+        c_ancestor.Base.metadata.bind = self.engine
         #self.session.configure(bind=self.engine)
 
 
     def create_database(self):
         """Создает или изменяет БД в соответствии с описанной в классах структурой."""
-        Base.metadata.create_all()
-        count = self.session.query(CEventType).count()
+        c_ancestor.Base.metadata.create_all()
+        count = self.session.query(c_eventtype.CEventType).count()
         if count == 0:
 
-            event_type = CEventType("День памяти ", "#8db0bd")  #☦️
+            event_type = c_eventtype.CEventType(1, "День памяти ", "#8db0bd", "☦️")
             self.session.add(event_type)
-            event_type = CEventType("День рождения ", "#ecc176")  # 🎂 
+            event_type = c_eventtype.CEventType(1, "День рождения ", "#ecc176", "🎂")
             self.session.add(event_type)
-            event_type = CEventType("Памятная дата - ", "#02b6ec")  #📆 
+            event_type = c_eventtype.CEventType(1, "Памятная дата - ", "#02b6ec", "📆")
             self.session.add(event_type)
-            event_type = CEventType("Напоминание: ", "#6dec04")  #🔔 
+            event_type = c_eventtype.CEventType(1, "Напоминание: ", "#6dec04", "🔔")
             self.session.add(event_type)
             self.session.commit()
 
 
     def delete_event(self, pid):
         """Удаляет уже существующее событие в БД."""
-        event_data = self.session.query(CEvent).filter_by(id=pid)
-        event_data.update({CEvent.fstatus:0}, synchronize_session = False)
+        event_data = self.session.query(c_event.CEvent).filter_by(id=pid)
+        event_data.update({c_event.CEvent.fstatus:0}, synchronize_session = False)
         self.session.commit()
 
 
     def get_event_data(self, pid):
         """Возвращает данные события в словаре."""
-        event_data = self.session.query(CEvent.fname,
-                                        CEvent.fyear,
-                                        CEvent.fmonth,
-                                        CEvent.fday,
-                                        CEvent.ftype).\
+        event_data = self.session.query(c_event.CEvent.fname,
+                                        c_event.CEvent.fyear,
+                                        c_event.CEvent.fmonth,
+                                        c_event.CEvent.fday,
+                                        c_event.CEvent.ftype).\
                                   filter_by(id=pid).first()
                                   #join(CEventType,CEvent.ftype).\
         return (event_data.fname,
@@ -70,7 +70,7 @@ class CDatabase(object):
         """Возвращает события из базы."""
         event_types_name_list = []
         event_types_id_list = []
-        queried_data = self.session.query(CEventType).order_by(CEventType.fname)
+        queried_data = self.session.query(c_eventtype.CEventType).order_by(c_eventtype.CEventType.fname)
         for event_type in queried_data: 
             
             event_types_name_list.append(event_type.fname)
@@ -82,11 +82,11 @@ class CDatabase(object):
         """Возвращает события из базы."""
         event_name_list = []
         event_id_list = []
-        event_data = self.session.query(CEvent.fname,
-                                        CEventType.fname).join(CEventType).all()
-        for event_id, event_name, event_type_name in self.session.query(CEvent.id,
-                                                                        CEvent.fname,
-                                                                        CEventType.fname).join(CEventType).all():
+        event_data = self.session.query(c_event.CEvent.fname,
+                                        c_eventtype.CEventType.fname).join(c_eventtype.CEventType).all()
+        for event_id, event_name, event_type_name in self.session.query(c_event.CEvent.id,
+                                                                        c_event.CEvent.fname,
+                                                                        c_eventtype.CEventType.fname).join(c_eventtype.CEventType).all():
             
             
             event_name_list.append(event_type_name+event_name)
@@ -96,17 +96,17 @@ class CDatabase(object):
 
     def insert_event(self, pname, pdate, ptype):
         """Добавляет новое событие в БД."""
-        event = CEvent(pname, pdate, ptype)
+        event = c_event.CEvent(1, pname, pdate, ptype)
         self.session.add(event)
         self.session.commit()
 
 
     def update_event(self, pid, pname, pdate, ptype):
         """Изменяет уже существующее событие в БД."""
-        event_data = self.session.query(CEvent).filter_by(id=pid)
-        event_data.update({CEvent.fname:pname,
-                           CEvent.fyear:pdate.year,
-                           CEvent.fmonth:pdate.month,
-                           CEvent.fday:pdate.day,
-                           CEvent.ftype:ptype}, synchronize_session = False)
+        event_data = self.session.query(c_event.CEvent).filter_by(id=pid)
+        event_data.update({c_event.CEvent.fname:pname,
+                           c_event.CEvent.fyear:pdate.year,
+                           c_event.CEvent.fmonth:pdate.month,
+                           c_event.CEvent.fday:pdate.day,
+                           c_event.CEvent.ftype:ptype}, synchronize_session = False)
         self.session.commit()

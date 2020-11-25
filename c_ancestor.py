@@ -30,11 +30,12 @@ class CAncestor(Base):
                 primary_key=True,
                 unique=True)
     fstatus = Column(Integer,
-                     nullable=False)
+                     nullable=False,
+                     )
 
     def __init__(self, pstatus):
         """Конструктор."""
-        self.fstatus = fstatus
+        self.fstatus = pstatus
         
     def __repr__(self):
         

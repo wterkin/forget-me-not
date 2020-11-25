@@ -67,6 +67,7 @@ class EventEditor(tk.Toplevel):
         self.event_date_frame = tk.Frame(self)
         self.event_date_entry = tkcal.DateEntry(self.event_date_frame,
                                     width=12,
+                                    locale="ru_RU",
                                     #background='darkblue',
                                     #foreground='white',
                                     borderwidth=2)        
@@ -106,6 +107,8 @@ class EventEditor(tk.Toplevel):
     
     def save_data(self):
         """Сохраняет введённые данные."""
+        print("*** ", self.event_date_entry.get())
+        print("*** ", datetime.strptime(self.event_date_entry.get(), "%d.%m.%Y"))
         event_date = datetime.strptime(self.event_date_entry.get(), "%d.%m.%Y")
         selected_items = self.event_type_box.curselection()
         # *** Если внезапно в листбоксе нет выбранного элемента - используем сохраненный ID
