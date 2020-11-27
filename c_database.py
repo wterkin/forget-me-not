@@ -20,10 +20,7 @@ class CDatabase(object):
         Session = sessionmaker()
         Session.configure(bind=self.engine)
         self.session = Session()
-        
-        #self.session = sessionmaker(bind=self.engine)()
         c_ancestor.Base.metadata.bind = self.engine
-        #self.session.configure(bind=self.engine)
 
 
     def create_database(self):
@@ -82,8 +79,8 @@ class CDatabase(object):
         """Возвращает события из базы."""
         event_name_list = []
         event_id_list = []
-        event_data = self.session.query(c_event.CEvent.fname,
-                                        c_eventtype.CEventType.fname).join(c_eventtype.CEventType).all()
+        # event_data = self.session.query(c_event.CEvent.fname,
+                                        # c_eventtype.CEventType.fname).join(c_eventtype.CEventType).all()
         for event_id, event_name, event_type_name in self.session.query(c_event.CEvent.id,
                                                                         c_event.CEvent.fname,
                                                                         c_eventtype.CEventType.fname).join(c_eventtype.CEventType).all():

@@ -3,6 +3,7 @@
 """Модуль класса события."""
 
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, create_engine
+from sqlalchemy.orm import relationship
 
 import c_ancestor
 import c_eventtype
@@ -18,8 +19,9 @@ class CEvent(c_ancestor.CAncestor):
     fmonth = Column(Integer, nullable=False)    
     fyear = Column(Integer, nullable=False)    
     ftype = Column(Integer, ForeignKey(c_eventtype.CEventType.id))
+    atype = relationship(c_eventtype.CEventType)
     fperiod = Column(Integer, ForeignKey(c_period.CPeriod.id))
-    
+    aperiod = relationship(c_period.CPeriod)
 
     def __init__(self, pstatus, pname, pdate, ptype):
         """Конструктор."""
@@ -34,7 +36,7 @@ class CEvent(c_ancestor.CAncestor):
     def __repr__(self):
         
         return f"""{ancestor_repr}
-				   Name:{self.fname}, 
+                   Name:{self.fname}, 
                    Date:{self.fday}.{self.fmonth}.{self.fyear}, 
                    Type:{self.ftype}"""
 
