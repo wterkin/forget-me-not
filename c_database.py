@@ -1,22 +1,24 @@
 #!/usr/bin/python
 ## -*- coding: utf-8 -*-
 
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, create_engine
+from sqlalchemy import create_engine # Table Column   Integer, String, MetaData, ForeignKey,
 # from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 import datetime as dt
 
 import c_ancestor
+import c_config
 import c_eventtype
-import c_period
-import c_event   
+#import c_period
+import c_event      
 
 class CDatabase(object):
     """Класс осуществляет работу с БД."""
-    def __init__(self, pdatabase_path):
+    def __init__(self, pconfig):
         """Конструктор."""
-        self.engine = create_engine('sqlite:///'+pdatabase_path)
+        self.config = pconfig
+        self.engine = create_engine('sqlite:///'+self.config.restore_value(c_config.DATABASE_FILE_KEY))
         Session = sessionmaker()
         Session.configure(bind=self.engine)
         self.session = Session()
@@ -47,6 +49,17 @@ class CDatabase(object):
         self.session.commit()
 
 
+    def actual_monthly_events(self):
+        """Возвращает список событий, актуальных в периоде от текущей даты до текущей + период видимости."""
+        # *** Дата по = текущая+период
+        #date_to = dt.now() + dt.timedelta(days=int(self.config.restore_value(c_config.MONITORING_PERIOD_KEY)))
+        
+        # *** Если дата по в следующем месяце...
+        # ***   разделяем период на два отрезка - от текущей даты до конца м-ца и от нач. м-ца до даты по 
+        # ***   делаем две выборки или union
+        # *** Иначе 
+        # ***   делаем одну выборку
+
     def get_event_data(self, pid):
         """Возвращает данные события в словаре."""
         event_data = self.session.query(c_event.CEvent.fname,
@@ -68,7 +81,8 @@ class CDatabase(object):
         event_types_name_list = []
         event_types_id_list = []
         queried_data = self.session.query(c_eventtype.CEventType).order_by(c_eventtype.CEventType.fname)
-        for event_type in queried_data: 
+        # ToDo: вот тут не доделал!
+        for event_type in queried_data:
             
             event_types_name_list.append(event_type.fname)
             event_types_id_list.append(event_type.id)

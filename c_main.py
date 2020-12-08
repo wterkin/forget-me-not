@@ -23,8 +23,8 @@ class MainWindow(tk.Frame):
         """Конструктор."""
         self.master = pmaster
         tk.Frame.__init__(self, self.master, **kwargs) # background = "white"
-        self.config = cfg.Configuration()
-        self.database = db.CDatabase(self.config.restore_value(cfg.DATABASE_FILE_KEY))
+        self.config = cfg.CConfiguration()
+        self.database = db.CDatabase(self.config) #.restore_value(cfg.DATABASE_FILE_KEY)
         if not self.is_database_exists():
             self.database.create_database()
             
@@ -93,8 +93,9 @@ class MainWindow(tk.Frame):
 
     def event_list(self):
         """Создает и открывает окно списка событий."""
-        event_list = evlst.EventList(pmaster=self,
-                                     pdatabase=self.database)
+        #event_list = 
+        evlst.EventList(pmaster=self,
+                                  pdatabase=self.database)
         
         
     def quit_program(self):

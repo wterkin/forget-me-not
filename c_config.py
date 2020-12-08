@@ -8,8 +8,9 @@ CONFIG_FOLDER = ".config/forget-me-not/"
 CONFIG_FILE_NAME = "forget-me-not.json"
 DATABASE_FILE_NAME = "forget-me-not.db"
 DATABASE_FILE_KEY = "database_file_name"
+MONITORING_PERIOD_KEY= "monitoring_period"
 
-class Configuration(object):
+class CConfiguration(object):
     """Класс конфигурации программы"""
     def __init__(self):
         """Конструктор"""
@@ -28,7 +29,8 @@ class Configuration(object):
         if not DATABASE_FILE_KEY in self.config:
             self.store_value(DATABASE_FILE_KEY, 
                              str(Path.home() / CONFIG_FOLDER / DATABASE_FILE_NAME))
-        #print("***", self.restore_value(DATABASE_FILE_KEY))
+        if not MONITORING_PERIOD_KEY in self.config:
+            self.store_value(MONITORING_PERIOD_KEY,  14)
 
     
     def store_value(self, pkey, pvalue):
