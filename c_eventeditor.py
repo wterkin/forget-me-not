@@ -6,6 +6,7 @@ from datetime import datetime
 
 class EventEditor(tk.Toplevel):
     def __init__(self, pmaster, pdatabase, pid, **kwargs):
+        # *** Конструктор
         tk.Toplevel.__init__(self, pmaster, **kwargs)
         self.master = pmaster
         self.database = pdatabase
@@ -107,8 +108,8 @@ class EventEditor(tk.Toplevel):
     
     def save_data(self):
         """Сохраняет введённые данные."""
-        print("*** ", self.event_date_entry.get())
-        print("*** ", datetime.strptime(self.event_date_entry.get(), "%d.%m.%Y"))
+        # print("*** ", self.event_date_entry.get())
+        # print("*** ", datetime.strptime(self.event_date_entry.get(), "%d.%m.%Y"))
         event_date = datetime.strptime(self.event_date_entry.get(), "%d.%m.%Y")
         selected_items = self.event_type_box.curselection()
         # *** Если внезапно в листбоксе нет выбранного элемента - используем сохраненный ID

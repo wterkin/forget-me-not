@@ -1,8 +1,7 @@
 #!/usr/bin/python
 ## -*- coding: utf-8 -*-
 
-from sqlalchemy import create_engine # Table Column   Integer, String, MetaData, ForeignKey,
-# from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import datetime as dt
@@ -60,15 +59,14 @@ class CDatabase(object):
         # *** Иначе 
         # ***   делаем одну выборку
 
-    def get_event_data(self, pid):
-        """Возвращает данные события в словаре."""
+    def get_event_data(self, pid): # +
+        """Возвращает данные события."""
         event_data = self.session.query(c_event.CEvent.fname,
                                         c_event.CEvent.fyear,
                                         c_event.CEvent.fmonth,
                                         c_event.CEvent.fday,
                                         c_event.CEvent.ftype).\
                                   filter_by(id=pid).first()
-                                  #join(CEventType,CEvent.ftype).\
         return (event_data.fname,
                 dt.date(event_data.fyear,
                         event_data.fmonth,
@@ -76,12 +74,11 @@ class CDatabase(object):
                 event_data.ftype)
 
 
-    def get_event_types_list(self):
+    def get_event_types_list(self): # +
         """Возвращает события из базы."""
         event_types_name_list = []
         event_types_id_list = []
         queried_data = self.session.query(c_eventtype.CEventType).order_by(c_eventtype.CEventType.fname)
-        # ToDo: вот тут не доделал!
         for event_type in queried_data:
             
             event_types_name_list.append(event_type.fname)
@@ -89,30 +86,28 @@ class CDatabase(object):
         return event_types_id_list, event_types_name_list
     
     
-    def get_events_list(self):
+    def get_events_list(self): # +
         """Возвращает события из базы."""
         event_name_list = []
         event_id_list = []
-        # event_data = self.session.query(c_event.CEvent.fname,
-                                        # c_eventtype.CEventType.fname).join(c_eventtype.CEventType).all()
-        for event_id, event_name, event_type_name in self.session.query(c_event.CEvent.id,
-                                                                        c_event.CEvent.fname,
-                                                                        c_eventtype.CEventType.fname).join(c_eventtype.CEventType).all():
-            
+        query = self.session.query(c_event.CEvent.id, c_event.CEvent.fname, c_eventtype.CEventType.fname)
+        query = query.join(c_eventtype.CEventType)
+        query = query.all()
+        for event_id, event_name, event_type_name in query:
             
             event_name_list.append(event_type_name+event_name)
             event_id_list.append(event_id)
         return event_id_list, event_name_list
 
 
-    def insert_event(self, pname, pdate, ptype):
+    def insert_event(self, pname, pdate, ptype): # +
         """Добавляет новое событие в БД."""
         event = c_event.CEvent(1, pname, pdate, ptype)
         self.session.add(event)
         self.session.commit()
 
 
-    def update_event(self, pid, pname, pdate, ptype):
+    def update_event(self, pid, pname, pdate, ptype): # +
         """Изменяет уже существующее событие в БД."""
         event_data = self.session.query(c_event.CEvent).filter_by(id=pid)
         event_data.update({c_event.CEvent.fname:pname,

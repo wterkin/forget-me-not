@@ -2,17 +2,15 @@
 # -*- coding: utf-8 -*-
 #https://github.com/wterkin/forget-me-not.git
 #https://younglinux.info/tkinter/bind.php
-#from tkinter import *
+
 from tkinter.ttk  import Style
 import tkinter as tk
 from pathlib import Path
-
 
 import c_config as cfg
 import c_database as db
 import c_eventlist as evlst
 import c_tools as tls
-
 
 MAIN_WINDOW_TITLE = "Forget-Me-Not version 0,1"
 MAIN_WINDOW_WIDTH = 800 
@@ -24,8 +22,9 @@ class MainWindow(tk.Frame):
         self.master = pmaster
         tk.Frame.__init__(self, self.master, **kwargs) # background = "white"
         self.config = cfg.CConfiguration()
-        self.database = db.CDatabase(self.config) #.restore_value(cfg.DATABASE_FILE_KEY)
+        self.database = db.CDatabase(self.config)
         if not self.is_database_exists():
+        
             self.database.create_database()
             
         self.construct_window()
@@ -45,6 +44,7 @@ class MainWindow(tk.Frame):
         #self.pack(fill=BOTH, expand=1)
         self.pack()
         
+        # *** Тулбар
         self.toolbar_frame = tk.Frame(self.master)
         self.event_list_button = tk.Button(self.toolbar_frame, text="Список событий", command=self.event_list)
         self.event_list_button.pack(side=tk.LEFT)
