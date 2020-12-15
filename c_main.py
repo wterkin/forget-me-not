@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+    #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #https://github.com/wterkin/forget-me-not.git
 #https://younglinux.info/tkinter/bind.php
@@ -7,14 +7,14 @@ from tkinter.ttk  import Style
 import tkinter as tk
 from pathlib import Path
 
+
 import c_config as cfg
+import c_constants as cnst
 import c_database as db
 import c_eventlist as evlst
 import c_tools as tls
 
 MAIN_WINDOW_TITLE = "Forget-Me-Not version 0,1"
-MAIN_WINDOW_WIDTH = 800 
-MAIN_WINDOW_HEIGHT = 600
 
 class MainWindow(tk.Frame):
     def __init__(self, pmaster=None, **kwargs):
@@ -57,45 +57,25 @@ class MainWindow(tk.Frame):
         self.text.pack()
         self.scroll_bar = tk.Scrollbar(command=self.text.yview)
         self.scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.text.config(yscrollcommand=self.scroll_bar.set)
+        #self.text.config(yscrollcommand=self.scroll_bar.set
         #self.text.insert(1.0, "Hello world!\nline two")
         #self.text.tag_add('title', 1.0, '1.end')
         #self.text.tag_config('title', justify=CENTER,
                         #font=("Verdana", 24, 'bold'))
         self.master.update_idletasks()
         self.text_frame.pack(expand=1, fill=tk.BOTH)
-        # tls.set_window_size(self.master, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
-        # print(f'{MAIN_WINDOW_WIDTH}x{MAIN_WINDOW_HEIGHT}')
-        self.master.geometry(f'{MAIN_WINDOW_WIDTH}x{MAIN_WINDOW_HEIGHT}')
-        # self.master.update()
+        window_left, window_top = tls.center_window(self.master)
+        window_geometry = f"{cnst.MAIN_WINDOW_WIDTH}x{cnst.MAIN_WINDOW_HEIGHT}+{window_left}+{window_top}"
+        self.master.geometry(window_geometry)
+        
         tls.center_window(self.master)
         self.master.update_idletasks()
         
-        
-    def centerWindow(self, window=None):
-        """Центрирует окно относительно экрана."""
-        if window is None:
-            
-            window = self.master
-            li_window_width = MAIN_WINDOW_WIDTH
-            li_window_height = MAIN_WINDOW_HEIGHT
-        else:
-            
-            li_window_width, li_window_height = tls.get_window_size(window)
-
-        li_screen_width = window.winfo_screenwidth()
-        li_screen_height = window.winfo_screenheight()
-        li_left = (li_screen_width - li_window_width) / 2
-        li_top = (li_screen_height - li_window_height) / 2
-        window.geometry('%dx%d+%d+%d' % (li_window_width, li_window_height, li_left, li_top))
-        tls.get_window_size(window)
-
+       
 
     def event_list(self):
         """Создает и открывает окно списка событий."""
-        #event_list = 
-        evlst.EventList(pmaster=self,
-                                  pdatabase=self.database)
+        evlst.EventList(pmaster=self, pdatabase=self.database)
         
         
     def quit_program(self):
