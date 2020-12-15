@@ -24,6 +24,8 @@ class EventList(tk.Toplevel):
    
     def construct_window(self):
         """Создает интерфейс окна."""
+        self.title(cnst.EVENT_LIST_WINDOW_TITLE)
+
         # *** Фрейм кнопок
         self.list_buttons_frame = tk.Frame(self)
         self.add_button = tk.Button(command=self.insert_event,
@@ -42,13 +44,13 @@ class EventList(tk.Toplevel):
                                       master=self.list_buttons_frame,
                                       text="Закрыть")
         self.close_button.pack(side=tk.RIGHT)
-        self.list_buttons_frame.pack(padx=10, pady=10)
+        self.list_buttons_frame.pack(side = tk.TOP)  # padx=10, pady=10
         
         # *** Фрейм списка событий
         self.events_frame = tk.Frame(self)
         self.events_box = tk.Listbox(self.events_frame)  #! , width=20, height=4)
-        self.events_box.pack()
-        self.events_frame.pack(padx=10, pady=10)
+        self.events_box.pack(expand=1, fill=tk.BOTH) # padx=10, pady=10
+        self.events_frame.pack(expand=1, fill=tk.BOTH)
         
         window_left, window_top = tls.center_window(self, cnst.EVENT_LIST_WINDOW_WIDTH, cnst.EVENT_LIST_WINDOW_HEIGHT)
         window_geometry = f"{cnst.EVENT_LIST_WINDOW_WIDTH}x{cnst.EVENT_LIST_WINDOW_HEIGHT}+{window_left}+{window_top}"
