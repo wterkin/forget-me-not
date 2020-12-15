@@ -5,12 +5,12 @@
 import c_constants as cnst
 
 
-def center_window(window):
+def center_window(pwindow, pwindow_width, pwindow_height):
     """Центрует заданное окно."""
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-    window_left = (screen_width - cnst.MAIN_WINDOW_WIDTH) // 2
-    window_top = (screen_height - cnst.MAIN_WINDOW_HEIGHT) // 2
+    screen_width = pwindow.winfo_screenwidth()
+    screen_height = pwindow.winfo_screenheight()
+    window_left = (screen_width - pwindow_width) // 2
+    window_top = (screen_height - pwindow_height) // 2
     return window_left, window_top
 
 

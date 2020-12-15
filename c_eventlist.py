@@ -3,8 +3,9 @@
 
 import tkinter as tk
 
+import c_constants as cnst
 import c_eventeditor as eved
-
+import c_tools as tls
 
 class EventList(tk.Toplevel):
     """Класс окна списка событий."""
@@ -48,6 +49,12 @@ class EventList(tk.Toplevel):
         self.events_box = tk.Listbox(self.events_frame)  #! , width=20, height=4)
         self.events_box.pack()
         self.events_frame.pack(padx=10, pady=10)
+        
+        window_left, window_top = tls.center_window(self, cnst.EVENT_LIST_WINDOW_WIDTH, cnst.EVENT_LIST_WINDOW_HEIGHT)
+        window_geometry = f"{cnst.EVENT_LIST_WINDOW_WIDTH}x{cnst.EVENT_LIST_WINDOW_HEIGHT}+{window_left}+{window_top}"
+        self.geometry(window_geometry)
+        self.update_idletasks()
+
 
    
 

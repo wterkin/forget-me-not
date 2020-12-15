@@ -14,7 +14,6 @@ import c_database as db
 import c_eventlist as evlst
 import c_tools as tls
 
-MAIN_WINDOW_TITLE = "Forget-Me-Not version 0,1"
 
 class MainWindow(tk.Frame):
     def __init__(self, pmaster=None, **kwargs):
@@ -38,7 +37,7 @@ class MainWindow(tk.Frame):
         
     def construct_window(self):
         """Создает интерфейс окна."""
-        self.master.title(MAIN_WINDOW_TITLE)
+        self.master.title(cnst.MAIN_WINDOW_TITLE)
         self.style = Style()
         self.style.theme_use("default")
         #self.pack(fill=BOTH, expand=1)
@@ -52,25 +51,21 @@ class MainWindow(tk.Frame):
         self.quit_button.pack(side=tk.RIGHT)
         self.toolbar_frame.pack(side=tk.TOP)
         
+        # *** Текстовый бокс.
         self.text_frame = tk.Frame(self.master)
-        self.text = tk.Text(self.text_frame)
-        self.text.pack()
+        self.text = tk.Text(self.text_frame, bg="Seashell")
+        self.text.pack(fill=tk.BOTH)
         self.scroll_bar = tk.Scrollbar(command=self.text.yview)
         self.scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
-        #self.text.config(yscrollcommand=self.scroll_bar.set
-        #self.text.insert(1.0, "Hello world!\nline two")
-        #self.text.tag_add('title', 1.0, '1.end')
-        #self.text.tag_config('title', justify=CENTER,
-                        #font=("Verdana", 24, 'bold'))
-        self.master.update_idletasks()
+        self.text.config(yscrollcommand=self.scroll_bar.set)
         self.text_frame.pack(expand=1, fill=tk.BOTH)
-        window_left, window_top = tls.center_window(self.master)
+        
+        # *** Отцентрируем окно
+        window_left, window_top = tls.center_window(self.master, cnst.MAIN_WINDOW_WIDTH, cnst.MAIN_WINDOW_HEIGHT)
         window_geometry = f"{cnst.MAIN_WINDOW_WIDTH}x{cnst.MAIN_WINDOW_HEIGHT}+{window_left}+{window_top}"
         self.master.geometry(window_geometry)
-        
-        tls.center_window(self.master)
+
         self.master.update_idletasks()
-        
        
 
     def event_list(self):
