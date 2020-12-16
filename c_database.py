@@ -4,13 +4,16 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-import datetime as dt
+import datetime as dtime
+from datetime import datetime as dt
+
 
 import c_ancestor
 import c_config
 import c_eventtype
 #import c_period
-import c_event      
+import c_event  
+import c_tools as tls    
 
 class CDatabase(object):
     """Класс осуществляет работу с БД."""
@@ -22,6 +25,52 @@ class CDatabase(object):
         Session.configure(bind=self.engine)
         self.session = Session()
         c_ancestor.Base.metadata.bind = self.engine
+
+
+    def actual_monthly_events(self):
+        """Возвращает список событий, актуальных в периоде от текущей даты до текущей + период видимости."""
+        # *** Дата по = текущая+период
+        date_from = dt.now().date()
+        print("*** DB.AME.df ", date_from)
+        # *** Если дата по в следующем месяце разделяем период на два отрезка - 
+        #     от текущей даты до конца м-ца и от нач. м-ца до даты по 
+        date_to =  date_from + dtime.timedelta(days=int(self.config.restore_value(c_config.MONITORING_PERIOD_KEY)))
+        print("*** DB.AME.dt ", date_to)
+        if date_to.month != date_from.month:
+            
+            this_month_date_to = tls.get_months_last_date(date_from)
+            print("*** DB.AME.tmdt ", this_month_date_to)
+            
+            next_month_date_from = this_month_date_to + timedelta(days=1)
+            print("*** DB.AME.nmdf ", next_month_date_from)
+            
+            # ***   делаем две выборки или union
+            queried_data1 = self.session.query(c_event.CEventT)
+            queried_data1 = queried_data1.filter(fyear>=date_from.year, 
+                                                 and_(fmonth>=date_from.month, 
+                                                 and_(fday<=date_from.day,
+                                                 and_(fyear<=this_month_date_to.year,
+                                                 and_(fmonth<=this_month_date_to.month,
+                                                 and_(fday<=this_month_date_to.day))))))
+            queried_data2 = self.session.query(c_event.CEventT)
+            queried_data2 = queried_data2.filter(fyear>=next_month_date_from.year, 
+                                                 and_(fmonth>=next_month_date_from.month, 
+                                                 and_(fday>=next_month_date_from.day,
+                                                 and_(fyear<=date_to.year,
+                                                 and_(fmonth<=date_to.month,
+                                                 and_(fday<=date_to.day))))))
+            query = queried_data1.union(queried_data2)
+            query = query.all()
+            return query
+            # .order_by(c_eventtype.CEventType.fname)
+            
+            
+        else:
+            
+            pass
+        
+        # *** Иначе 
+        # ***   делаем одну выборку
 
 
     def create_database(self):
@@ -47,17 +96,6 @@ class CDatabase(object):
         event_data.update({c_event.CEvent.fstatus:0}, synchronize_session = False)
         self.session.commit()
 
-
-    def actual_monthly_events(self):
-        """Возвращает список событий, актуальных в периоде от текущей даты до текущей + период видимости."""
-        # *** Дата по = текущая+период
-        #date_to = dt.now() + dt.timedelta(days=int(self.config.restore_value(c_config.MONITORING_PERIOD_KEY)))
-        
-        # *** Если дата по в следующем месяце...
-        # ***   разделяем период на два отрезка - от текущей даты до конца м-ца и от нач. м-ца до даты по 
-        # ***   делаем две выборки или union
-        # *** Иначе 
-        # ***   делаем одну выборку
 
     def get_event_data(self, pid): # +
         """Возвращает данные события."""

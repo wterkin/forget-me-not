@@ -52,6 +52,7 @@ class EventList(tk.Toplevel):
         self.events_box.pack(expand=1, fill=tk.BOTH) # padx=10, pady=10
         self.events_frame.pack(expand=1, fill=tk.BOTH)
         
+        print("EVLST:CONS:GEO", self.master.get_master().geometry())
         window_left, window_top = tls.center_window(self, cnst.EVENT_LIST_WINDOW_WIDTH, cnst.EVENT_LIST_WINDOW_HEIGHT)
         window_geometry = f"{cnst.EVENT_LIST_WINDOW_WIDTH}x{cnst.EVENT_LIST_WINDOW_HEIGHT}+{window_left}+{window_top}"
         self.geometry(window_geometry)

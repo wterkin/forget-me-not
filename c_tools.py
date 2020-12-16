@@ -3,7 +3,7 @@
 """Модуль всякой полезной всячины."""
 
 import c_constants as cnst
-
+from datetime import datetime as dt
 
 def center_window(pwindow, pwindow_width, pwindow_height):
     """Центрует заданное окно."""
@@ -19,3 +19,10 @@ def center_window(pwindow, pwindow_width, pwindow_height):
     # print("*** SWS ",  width, height)
     # window.geometry('%dx%d+%d+%d' % (width, height, 0, 0))
 
+def get_months_last_date(pdate):
+    """Возвращает первый день месяца"""
+    if pdate.month == 12: # December
+        last_day_selected_month = dt.date(pdate.year, pdate.month, 31)
+    else:
+        last_day_selected_month = dt.date(pdate.year, pdate.month + 1, 1) - timedelta(days=1)
+    return last_day_selected_month    

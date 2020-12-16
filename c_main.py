@@ -18,8 +18,8 @@ import c_tools as tls
 class MainWindow(tk.Frame):
     def __init__(self, pmaster=None, **kwargs):
         """Конструктор."""
-        self.master = pmaster
-        tk.Frame.__init__(self, self.master, **kwargs) # background = "white"
+        self.__master = pmaster
+        tk.Frame.__init__(self, self.__master, **kwargs) # background = "white"
         self.config = cfg.CConfiguration()
         self.database = db.CDatabase(self.config)
         if not self.is_database_exists():
@@ -27,7 +27,9 @@ class MainWindow(tk.Frame):
             self.database.create_database()
             
         self.construct_window()
-
+        self.load_data()
+        # self.text_font=("Helvetica", "14")
+        # self.button_font=()
 
     def is_database_exists(self):
         """Проверяет наличие базы данных по пути в конфигурации."""
@@ -37,14 +39,14 @@ class MainWindow(tk.Frame):
         
     def construct_window(self):
         """Создает интерфейс окна."""
-        self.master.title(cnst.MAIN_WINDOW_TITLE)
+        self.__master.title(cnst.MAIN_WINDOW_TITLE)
         self.style = Style()
         self.style.theme_use("default")
         #self.pack(fill=BOTH, expand=1)
         self.pack()
         
         # *** Тулбар
-        self.toolbar_frame = tk.Frame(self.master)
+        self.toolbar_frame = tk.Frame(self.__master)
         self.event_list_button = tk.Button(self.toolbar_frame, text="Список событий", command=self.event_list)
         self.event_list_button.pack(side=tk.LEFT)
         self.quit_button = tk.Button(self.toolbar_frame, text="Выйти", command=self.quit_program)
@@ -52,7 +54,7 @@ class MainWindow(tk.Frame):
         self.toolbar_frame.pack(side=tk.TOP)
         
         # *** Текстовый бокс.
-        self.text_frame = tk.Frame(self.master)
+        self.text_frame = tk.Frame(self.__master)
         self.text = tk.Text(self.text_frame, bg="Seashell")
         self.text.pack(fill=tk.BOTH)
         self.scroll_bar = tk.Scrollbar(command=self.text.yview)
@@ -61,17 +63,28 @@ class MainWindow(tk.Frame):
         self.text_frame.pack(expand=1, fill=tk.BOTH)
         
         # *** Отцентрируем окно
-        window_left, window_top = tls.center_window(self.master, cnst.MAIN_WINDOW_WIDTH, cnst.MAIN_WINDOW_HEIGHT)
+        window_left, window_top = tls.center_window(self.__master, cnst.MAIN_WINDOW_WIDTH, cnst.MAIN_WINDOW_HEIGHT)
         window_geometry = f"{cnst.MAIN_WINDOW_WIDTH}x{cnst.MAIN_WINDOW_HEIGHT}+{window_left}+{window_top}"
-        self.master.geometry(window_geometry)
+        self.__master.geometry(window_geometry)
 
-        self.master.update_idletasks()
+        self.__master.update_idletasks()
        
+       
+    def get_master(self):
+        """Возвращает мастера"""
+        return self.__master
+
 
     def event_list(self):
         """Создает и открывает окно списка событий."""
         evlst.EventList(pmaster=self, pdatabase=self.database)
         
+        
+    def load_data(self):
+        """Получает список событий за интервал, определенный в конфиге и отображает их."""
+        db_data = self.database.actual_monthly_events()
+        print(db_data)
+
         
     def quit_program(self):
         """Закрывает программу."""
