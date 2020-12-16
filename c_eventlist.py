@@ -89,6 +89,7 @@ class EventList(tk.Toplevel):
 
     def update_event(self):
         """Изменяет уже существующее событие."""
+        # FixMe: вот тут не передаются данные в редактор!
         selected_items = self.events_box.curselection()
         if len(selected_items) > 0:
             event_ident = self.event_id_list[selected_items[0]]

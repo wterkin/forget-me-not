@@ -3,7 +3,8 @@
 """Модуль всякой полезной всячины."""
 
 import c_constants as cnst
-from datetime import datetime as dt
+# from datetime import datetime as dt
+import calendar
 
 def center_window(pwindow, pwindow_width, pwindow_height):
     """Центрует заданное окно."""
@@ -21,8 +22,9 @@ def center_window(pwindow, pwindow_width, pwindow_height):
 
 def get_months_last_date(pdate):
     """Возвращает первый день месяца"""
-    if pdate.month == 12: # December
-        last_day_selected_month = dt.date(pdate.year, pdate.month, 31)
-    else:
-        last_day_selected_month = dt.date(pdate.year, pdate.month + 1, 1) - timedelta(days=1)
-    return last_day_selected_month    
+    return calendar.monthrange(pdate.year, pdate.month)[1]
+    # if pdate.month == 12: # December
+        # last_day_selected_month = dtime.datetime(pdate.year, pdate.month, 31)
+    # else:
+        # last_day_selected_month = dtime.datetime(pdate.year, pdate.month + 1, 1) - timedelta(days=1)
+    # return last_day_selected_month    

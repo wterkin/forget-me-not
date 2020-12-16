@@ -3,6 +3,7 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import and_
 
 import datetime as dtime
 from datetime import datetime as dt
@@ -38,27 +39,28 @@ class CDatabase(object):
         print("*** DB.AME.dt ", date_to)
         if date_to.month != date_from.month:
             
-            this_month_date_to = tls.get_months_last_date(date_from)
+            last_day = tls.get_months_last_date(date_from)
+            this_month_date_to = dtime.datetime(date_from.year, date_from.month, last_day)
             print("*** DB.AME.tmdt ", this_month_date_to)
             
-            next_month_date_from = this_month_date_to + timedelta(days=1)
+            next_month_date_from = this_month_date_to + dtime.timedelta(days=1)
             print("*** DB.AME.nmdf ", next_month_date_from)
             
             # ***   делаем две выборки или union
-            queried_data1 = self.session.query(c_event.CEventT)
-            queried_data1 = queried_data1.filter(fyear>=date_from.year, 
-                                                 and_(fmonth>=date_from.month, 
-                                                 and_(fday<=date_from.day,
-                                                 and_(fyear<=this_month_date_to.year,
-                                                 and_(fmonth<=this_month_date_to.month,
-                                                 and_(fday<=this_month_date_to.day))))))
-            queried_data2 = self.session.query(c_event.CEventT)
-            queried_data2 = queried_data2.filter(fyear>=next_month_date_from.year, 
-                                                 and_(fmonth>=next_month_date_from.month, 
-                                                 and_(fday>=next_month_date_from.day,
-                                                 and_(fyear<=date_to.year,
-                                                 and_(fmonth<=date_to.month,
-                                                 and_(fday<=date_to.day))))))
+            queried_data1 = self.session.query(c_event.CEvent)
+            queried_data1 = queried_data1.filter(c_event.CEvent.fyear>=date_from.year, 
+                                                 and_(c_event.CEvent.fmonth>=date_from.month, 
+                                                 and_(c_event.CEvent.fday<=date_from.day,
+                                                 and_(c_event.CEvent.fyear<=this_month_date_to.year,
+                                                 and_(c_event.CEvent.fmonth<=this_month_date_to.month,
+                                                 and_(c_event.CEvent.fday<=this_month_date_to.day))))))
+            queried_data2 = self.session.query(c_event.CEvent)
+            queried_data2 = queried_data2.filter(c_event.CEvent.fyear>=next_month_date_from.year, 
+                                                 and_(c_event.CEvent.fmonth>=next_month_date_from.month, 
+                                                 and_(c_event.CEvent.fday>=next_month_date_from.day,
+                                                 and_(c_event.CEvent.fyear<=date_to.year,
+                                                 and_(c_event.CEvent.fmonth<=date_to.month,
+                                                 and_(c_event.CEvent.fday<=date_to.day))))))
             query = queried_data1.union(queried_data2)
             query = query.all()
             return query
