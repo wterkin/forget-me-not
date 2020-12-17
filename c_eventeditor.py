@@ -11,7 +11,8 @@ class EventEditor(tk.Toplevel):
         self.master = pmaster
         self.database = pdatabase
         self.id = pid
-        self.event_period_var = 0
+        self.event_period_var = BooleanVar()
+        self.event_period_var.set(0)
         self.construct_window()
         if self.id is not None:
 
@@ -46,6 +47,7 @@ class EventEditor(tk.Toplevel):
                                          height=4,
                                          width=20)
         self.event_type_box.pack(side=tk.LEFT)
+        
         self.period_monthly_rb = tk.Radiobutton(indicatoron=1,
                                           master=self.event_type_frame,
                                           text="Ежемесячно",
@@ -93,11 +95,15 @@ class EventEditor(tk.Toplevel):
     def load_data(self):
         """Процедура загрузки данных в контролы."""
         self.load_event_types_list()
-        event_name, event_date, self.event_type = self.database.get_event_data(self.id)
+        event_name, event_date, event_type, event_period = self.database.get_event_data(self.id)
+        # print("EVED.LD.EVID ", self.id)
+        # print("EVED.LD.EVN ", event_name)
+        # print("EVED.LD.EVN ", event_date)
+        # print("EVED.LD.EVN ", self.event_type)
         self.event_name_entry.insert(tk.END, event_name)
         self.event_date_entry.set_date(event_date)
-        self.event_type_box.select_set(self.event_types_id_list.index(self.event_type))
-    
+        self.event_type_box.select_set(self.event_types_id_list.index(event_type))
+        self.event_period_var.set(event_period)
     
     def load_event_types_list(self):
         """Загружает список типов событий в listbox."""
@@ -119,18 +125,21 @@ class EventEditor(tk.Toplevel):
         else:
             
             event_type = self.event_types_id_list[selected_items[0]]
-        
+
+            
         if self.id is None:
 
             self.database.insert_event(self.event_name_entry.get().strip(),
                                        event_date,
-                                       event_type)
+                                       event_type,
+                                       self.event_period_var)
         else:
 
             self.database.update_event(self.id, 
                                        self.event_name_entry.get().strip(),
                                        event_date,
-                                       event_type)
+                                       event_type,
+                                       self.event_period_var)
                                        
         self.destroy()
     

@@ -50,7 +50,7 @@ class CDatabase(object):
             queried_data1 = self.session.query(c_event.CEvent)
             queried_data1 = queried_data1.filter(c_event.CEvent.fyear>=date_from.year, 
                                                  and_(c_event.CEvent.fmonth>=date_from.month, 
-                                                 and_(c_event.CEvent.fday<=date_from.day,
+                                                 and_(c_event.CEvent.fday>=date_from.day,
                                                  and_(c_event.CEvent.fyear<=this_month_date_to.year,
                                                  and_(c_event.CEvent.fmonth<=this_month_date_to.month,
                                                  and_(c_event.CEvent.fday<=this_month_date_to.day))))))
@@ -108,10 +108,11 @@ class CDatabase(object):
                                         c_event.CEvent.ftype).\
                                   filter_by(id=pid).first()
         return (event_data.fname,
-                dt.date(event_data.fyear,
-                        event_data.fmonth,
-                        event_data.fday),
-                event_data.ftype)
+                dtime.datetime(event_data.fyear,
+                               event_data.fmonth,
+                               event_data.fday),
+                event_data.ftype,
+                event_data.fperiod)
 
 
     def get_event_types_list(self): # +
@@ -140,19 +141,20 @@ class CDatabase(object):
         return event_id_list, event_name_list
 
 
-    def insert_event(self, pname, pdate, ptype): # +
+    def insert_event(self, pname, pdate, ptype, pperiod): # +
         """Добавляет новое событие в БД."""
-        event = c_event.CEvent(1, pname, pdate, ptype)
+        event = c_event.CEvent(1, pname, pdate, ptype, pperiod)
         self.session.add(event)
         self.session.commit()
 
 
-    def update_event(self, pid, pname, pdate, ptype): # +
+    def update_event(self, pid, pname, pdate, ptype, pperiod): # +
         """Изменяет уже существующее событие в БД."""
         event_data = self.session.query(c_event.CEvent).filter_by(id=pid)
         event_data.update({c_event.CEvent.fname:pname,
                            c_event.CEvent.fyear:pdate.year,
                            c_event.CEvent.fmonth:pdate.month,
                            c_event.CEvent.fday:pdate.day,
-                           c_event.CEvent.ftype:ptype}, synchronize_session = False)
+                           c_event.CEvent.ftype:ptype,
+                           c_event.CEvent.fperiod:pperiod}, synchronize_session = False)
         self.session.commit()

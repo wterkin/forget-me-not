@@ -23,7 +23,7 @@ class CEvent(c_ancestor.CAncestor):
     fperiod = Column(Integer, ForeignKey(c_period.CPeriod.id))
     aperiod = relationship(c_period.CPeriod)
 
-    def __init__(self, pstatus, pname, pdate, ptype):
+    def __init__(self, pstatus, pname, pdate, ptype, pperiod):
         """Конструктор."""
 
         super().__init__(pstatus)
@@ -32,12 +32,12 @@ class CEvent(c_ancestor.CAncestor):
         self.fmonth = pdate.month
         self.fyear = pdate.year
         self.ftype = ptype
+        self.fperiod = pperiod
 
     def __repr__(self):
         
-        return f"""{ancestor_repr}
-                   Name:{self.fname}, 
+        return f"""Name:{self.fname}, 
                    Date:{self.fday}.{self.fmonth}.{self.fyear}, 
-                   Type:{self.ftype}"""
+                   Type:{self.ftype}, Period:{self.ftype}, {super().__repr__()}"""
 
 
