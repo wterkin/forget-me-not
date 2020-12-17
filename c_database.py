@@ -15,6 +15,7 @@ import c_eventtype
 #import c_period
 import c_event  
 import c_tools as tls    
+import c_constants as const
 
 class CDatabase(object):
     """Класс осуществляет работу с БД."""
@@ -47,20 +48,19 @@ class CDatabase(object):
             print("*** DB.AME.nmdf ", next_month_date_from)
             
             # ***   делаем две выборки или union
+            #c_event.CEvent.fyear>=date_from.year,                                                  and_(
+            # and_(c_event.CEvent.fyear<=this_month_date_to.year,
             queried_data1 = self.session.query(c_event.CEvent)
-            queried_data1 = queried_data1.filter(c_event.CEvent.fyear>=date_from.year, 
-                                                 and_(c_event.CEvent.fmonth>=date_from.month, 
+            queried_data1 = queried_data1.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
                                                  and_(c_event.CEvent.fday>=date_from.day,
-                                                 and_(c_event.CEvent.fyear<=this_month_date_to.year,
-                                                 and_(c_event.CEvent.fmonth<=this_month_date_to.month,
-                                                 and_(c_event.CEvent.fday<=this_month_date_to.day))))))
+                                                 and_(c_event.CEvent.fday<=this_month_date_to.day)))
             queried_data2 = self.session.query(c_event.CEvent)
-            queried_data2 = queried_data2.filter(c_event.CEvent.fyear>=next_month_date_from.year, 
-                                                 and_(c_event.CEvent.fmonth>=next_month_date_from.month, 
+            #c_event.CEvent.fyear>=next_month_date_from.year, and_(
+            #                                                 and_(c_event.CEvent.fyear<=date_to.year,
+
+            queried_data2 = queried_data2.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
                                                  and_(c_event.CEvent.fday>=next_month_date_from.day,
-                                                 and_(c_event.CEvent.fyear<=date_to.year,
-                                                 and_(c_event.CEvent.fmonth<=date_to.month,
-                                                 and_(c_event.CEvent.fday<=date_to.day))))))
+                                                 and_(c_event.CEvent.fday<=date_to.day)))
             query = queried_data1.union(queried_data2)
             query = query.all()
             return query
@@ -105,7 +105,8 @@ class CDatabase(object):
                                         c_event.CEvent.fyear,
                                         c_event.CEvent.fmonth,
                                         c_event.CEvent.fday,
-                                        c_event.CEvent.ftype).\
+                                        c_event.CEvent.ftype,
+                                        c_event.CEvent.fperiod).\
                                   filter_by(id=pid).first()
         return (event_data.fname,
                 dtime.datetime(event_data.fyear,

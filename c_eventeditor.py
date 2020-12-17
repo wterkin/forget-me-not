@@ -11,7 +11,7 @@ class EventEditor(tk.Toplevel):
         self.master = pmaster
         self.database = pdatabase
         self.id = pid
-        self.event_period_var = BooleanVar()
+        self.event_period_var = tk.IntVar()
         self.event_period_var.set(0)
         self.construct_window()
         if self.id is not None:
@@ -54,7 +54,7 @@ class EventEditor(tk.Toplevel):
                                           value=0,
                                           variable=self.event_period_var
                                           )
-        self.period_monthly_rb.pack(side=tk.RIGHT)  # anchor=tk.W)
+        self.period_monthly_rb.pack(side=tk.LEFT)  # anchor=tk.W)
         self.period_yearly_rb = tk.Radiobutton(indicatoron=1,
                                           master=self.event_type_frame,
                                           text="Ежегодно  ",
@@ -99,7 +99,7 @@ class EventEditor(tk.Toplevel):
         # print("EVED.LD.EVID ", self.id)
         # print("EVED.LD.EVN ", event_name)
         # print("EVED.LD.EVN ", event_date)
-        # print("EVED.LD.EVN ", self.event_type)
+        print("EVED.LD.EVNPER ", event_period)
         self.event_name_entry.insert(tk.END, event_name)
         self.event_date_entry.set_date(event_date)
         self.event_type_box.select_set(self.event_types_id_list.index(event_type))
@@ -132,15 +132,15 @@ class EventEditor(tk.Toplevel):
             self.database.insert_event(self.event_name_entry.get().strip(),
                                        event_date,
                                        event_type,
-                                       self.event_period_var)
+                                       self.event_period_var.get())
         else:
 
             self.database.update_event(self.id, 
                                        self.event_name_entry.get().strip(),
                                        event_date,
                                        event_type,
-                                       self.event_period_var)
-                                       
+                                       self.event_period_var.get())
+        print("EVED.LD.EVNPER ", self.event_period_var.get())
         self.destroy()
     
     
