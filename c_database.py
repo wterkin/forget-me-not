@@ -48,31 +48,31 @@ class CDatabase(object):
             print("*** DB.AME.nmdf ", next_month_date_from)
             
             # ***   делаем две выборки или union
-            #c_event.CEvent.fyear>=date_from.year,                                                  and_(
-            # and_(c_event.CEvent.fyear<=this_month_date_to.year,
-            queried_data1 = self.session.query(c_event.CEvent)
+            queried_data1 = self.session.query(c_event.CEvent, )
             queried_data1 = queried_data1.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
                                                  and_(c_event.CEvent.fday>=date_from.day,
                                                  and_(c_event.CEvent.fday<=this_month_date_to.day)))
-            queried_data2 = self.session.query(c_event.CEvent)
-            #c_event.CEvent.fyear>=next_month_date_from.year, and_(
-            #                                                 and_(c_event.CEvent.fyear<=date_to.year,
+            #queried_data1 = queried_data1.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
 
+            queried_data2 = self.session.query(c_event.CEvent)
             queried_data2 = queried_data2.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
                                                  and_(c_event.CEvent.fday>=next_month_date_from.day,
                                                  and_(c_event.CEvent.fday<=date_to.day)))
+            #queried_data2 = queried_data2.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
+
             query = queried_data1.union(queried_data2)
             query = query.all()
-            return query
-            # .order_by(c_eventtype.CEventType.fname)
-            
-            
         else:
-            
-            pass
+
+        # *** Иначе делаем одну выборку
+            queried_data = self.session.query(c_event.CEvent)
+            queried_data = queried_data.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
+                                               and_(c_event.CEvent.fday>=date_from.day,
+                                               and_(c_event.CEvent.fday<=date_to.day)))
+            queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
+            query = query.all()
+        return query
         
-        # *** Иначе 
-        # ***   делаем одну выборку
 
 
     def create_database(self):
