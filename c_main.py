@@ -53,14 +53,24 @@ class MainWindow(tk.Frame):
         self.quit_button.pack(side=tk.RIGHT)
         self.toolbar_frame.pack(side=tk.TOP)
         
-        # *** Текстовый бокс.
-        self.text_frame = tk.Frame(self.__master)
-        self.text = tk.Text(self.text_frame, bg="Seashell")
-        self.text.pack(fill=tk.BOTH)
-        self.scroll_bar = tk.Scrollbar(command=self.text.yview)
-        self.scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.text.config(yscrollcommand=self.scroll_bar.set)
-        self.text_frame.pack(expand=1, fill=tk.BOTH)
+        # *** Текстовый бокс событий годовой периодичности.
+        self.yearly_text_frame = tk.Frame(self.__master)
+        self.yearly_text = tk.Text(self.yearly_text_frame, bg="Seashell")
+        self.yearly_text.pack(fill=tk.BOTH)
+        self.yearly_scroll_bar = tk.Scrollbar(command=self.yearly_text.yview)
+        self.yearly_scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.yearly_text.config(yscrollcommand=self.yearly_scroll_bar.set)
+        self.yearly_text_frame.pack(expand=1, fill=tk.BOTH)
+
+        # *** Текстовый бокс событий месячной периодичности.
+        self.monthly_text_frame = tk.Frame(self.__master)
+        self.monthly_text = tk.Text(self.monthly_text_frame, bg="Seashell")
+        self.monthly_text.pack(fill=tk.BOTH)
+        self.monthy_scroll_bar = tk.Scrollbar(command=self.monthly_text.yview)
+        self.monthly_scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.monthly_text.config(yscrollcommand=self.monthly_scroll_bar.set)
+        self.monthly_text_frame.pack(expand=1, fill=tk.BOTH)
+        
         
         # *** Отцентрируем окно
         window_left, window_top = tls.center_window(self.__master, cnst.MAIN_WINDOW_WIDTH, cnst.MAIN_WINDOW_HEIGHT)

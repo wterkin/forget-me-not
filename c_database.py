@@ -30,7 +30,7 @@ class CDatabase(object):
 
 
     def actual_monthly_events(self):
-        """Возвращает список событий, актуальных в периоде от текущей даты до текущей + период видимости."""
+        """Возвращает список ежемесячных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
         # *** Дата по = текущая+период
         date_from = dt.now().date()
         print("*** DB.AME.df ", date_from)
@@ -47,7 +47,7 @@ class CDatabase(object):
             next_month_date_from = this_month_date_to + dtime.timedelta(days=1)
             print("*** DB.AME.nmdf ", next_month_date_from)
             
-            # ***   делаем две выборки или union
+            # *** делаем две выборки
             queried_data1 = self.session.query(c_event.CEvent)
             queried_data1 = queried_data1.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
                                                  and_(c_event.CEvent.fday>=date_from.day,
@@ -74,6 +74,8 @@ class CDatabase(object):
             queried_data = queried_data.all()
         return queried_data
         
+    def actual_yearly_events(self):
+        """Возвращает список ежегодных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
 
 
     def create_database(self):
