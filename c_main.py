@@ -55,7 +55,7 @@ class MainWindow(tk.Frame):
         
         # *** Текстовый бокс событий годовой периодичности.
         self.yearly_text_frame = tk.Frame(self.__master)
-        self.yearly_text = tk.Text(self.yearly_text_frame, bg="Seashell")
+        self.yearly_text = tk.Text(self.yearly_text_frame, width=25, height=15, bg="Seashell")
         self.yearly_text.pack(fill=tk.BOTH)
         self.yearly_scroll_bar = tk.Scrollbar(command=self.yearly_text.yview)
         self.yearly_scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -64,9 +64,9 @@ class MainWindow(tk.Frame):
 
         # *** Текстовый бокс событий месячной периодичности.
         self.monthly_text_frame = tk.Frame(self.__master)
-        self.monthly_text = tk.Text(self.monthly_text_frame, bg="Seashell")
+        self.monthly_text = tk.Text(self.monthly_text_frame, width=25, height=15, bg="Seashell")
         self.monthly_text.pack(fill=tk.BOTH)
-        self.monthy_scroll_bar = tk.Scrollbar(command=self.monthly_text.yview)
+        self.monthly_scroll_bar = tk.Scrollbar(command=self.monthly_text.yview)
         self.monthly_scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
         self.monthly_text.config(yscrollcommand=self.monthly_scroll_bar.set)
         self.monthly_text_frame.pack(expand=1, fill=tk.BOTH)
@@ -92,14 +92,16 @@ class MainWindow(tk.Frame):
         
     def load_data(self):
         """Получает список событий за интервал, определенный в конфиге и отображает их."""
-        db_data = self.database.actual_monthly_events()
-        #if len(db_data) > 1:
-            
-        for data in db_data:
-            
-            for event in data:
+        db_month_data = self.database.actual_monthly_events()
+        for event in db_month_data:
                     
-                print(event)
+            print(event)
+        db_year_data = self.database.actual_yearly_events()
+        for event in db_year_data:
+                    
+            print(event)
+    
+
         #else:
         
         

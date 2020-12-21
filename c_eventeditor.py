@@ -13,6 +13,7 @@ class EventEditor(tk.Toplevel):
         self.id = pid
         self.event_period_var = tk.IntVar()
         self.event_period_var.set(0)
+        #self.event_type = 0
         self.construct_window()
         if self.id is not None:
 
@@ -95,7 +96,7 @@ class EventEditor(tk.Toplevel):
     def load_data(self):
         """Процедура загрузки данных в контролы."""
         self.load_event_types_list()
-        event_name, event_date, event_type, event_period = self.database.get_event_data(self.id)
+        event_name, event_date, self.event_type, event_period = self.database.get_event_data(self.id)
         # print("EVED.LD.EVID ", self.id)
         # print("EVED.LD.EVN ", event_name)
         # print("EVED.LD.EVN ", event_date)

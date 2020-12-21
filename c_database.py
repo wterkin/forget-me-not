@@ -33,19 +33,19 @@ class CDatabase(object):
         """Возвращает список ежемесячных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
         # *** Дата по = текущая+период
         date_from = dt.now().date()
-        print("*** DB.AME.df ", date_from)
+        #print("*** DB.AME.df ", date_from)
         # *** Если дата по в следующем месяце разделяем период на два отрезка - 
         #     от текущей даты до конца м-ца и от нач. м-ца до даты по 
         date_to =  date_from + dtime.timedelta(days=int(self.config.restore_value(c_config.MONITORING_PERIOD_KEY)))
-        print("*** DB.AME.dt ", date_to)
+        #print("*** DB.AME.dt ", date_to)
         if date_to.month != date_from.month:
             
             last_day = tls.get_months_last_date(date_from)
             this_month_date_to = dtime.datetime(date_from.year, date_from.month, last_day)
-            print("*** DB.AME.tmdt ", this_month_date_to)
+            #print("*** DB.AME.tmdt ", this_month_date_to)
             
             next_month_date_from = this_month_date_to + dtime.timedelta(days=1)
-            print("*** DB.AME.nmdf ", next_month_date_from)
+            #print("*** DB.AME.nmdf ", next_month_date_from)
             
             # *** делаем две выборки
             queried_data1 = self.session.query(c_event.CEvent)
@@ -55,6 +55,11 @@ class CDatabase(object):
             queried_data1 = queried_data1.order_by(c_event.CEvent.fday)
             queried_data1 = queried_data1.all()
 
+            for data in queried_data1:
+                
+                data.fyear = this_month_date_to.year
+                data.fmonth = this_month_date_to.month
+
             queried_data2 = self.session.query(c_event.CEvent)
             queried_data2 = queried_data2.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
                                                  and_(c_event.CEvent.fday>=next_month_date_from.day,
@@ -62,7 +67,13 @@ class CDatabase(object):
             queried_data2 = queried_data2.order_by(c_event.CEvent.fday)
             queried_data2 = queried_data2.all()
 
-            return queried_data1, queried_data2
+            for data in queried_data2:
+                
+                data.fyear = next_month_date_from.year
+                data.fmonth = next_month_date_from.month
+                queried_data1.append(data)
+
+            return queried_data1  # , queried_data2
         else:
 
         # *** Иначе делаем одну выборку
@@ -72,10 +83,72 @@ class CDatabase(object):
                                                and_(c_event.CEvent.fday<=date_to.day)))
             queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data = queried_data.all()
+            for data in queried_data:
+                
+                data.fyear = this_month_date_to.year
+                data.fmonth = this_month_date_to.month
         return queried_data
         
+
     def actual_yearly_events(self):
         """Возвращает список ежегодных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
+        # *** Дата с..
+        date_from = dt.now().date()
+        # *** Дата по..
+        date_to =  date_from + dtime.timedelta(days=int(self.config.restore_value(c_config.MONITORING_PERIOD_KEY)))
+        # *** Если дата по в следующем году разделяем период на два отрезка - 
+        #     от текущей даты до конца года и от нач. года до даты по 
+        if date_to.year != date_from.year:
+            
+            last_day = tls.get_years_last_date(date_from)
+            this_year_date_to = dtime.datetime(date_from.year, date_from.month, last_day)
+            print("*** DB.AYE.tmdt ", this_year_date_to)
+            
+            next_year_date_from = this_year_date_to + dtime.timedelta(days=1)
+            print("*** DB.AYE.nmdf ", next_year_date_from)
+            # *** делаем две выборки
+            queried_data1 = self.session.query(c_event.CEvent)
+            queried_data1 = queried_data1.filter(c_event.CEvent.fperiod==const.EVENT_YEAR_PERIOD, 
+                                                 and_(c_event.CEvent.fday>=date_from.day,
+                                                 and_(c_event.CEvent.fmonth>=date_from.month,
+                                                 and_(c_event.CEvent.fday<=this_year_date_to.day,
+                                                 and_(c_event.CEvent.fmonth<=this_year_date_to.month)))))
+            queried_data1 = queried_data1.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
+            queried_data1 = queried_data1.all()
+
+            for data in queried_data1:
+                
+                data.fyear = this_year_date_to.year
+
+            queried_data2 = self.session.query(c_event.CEvent)
+            queried_data2 = queried_data2.filter(c_event.CEvent.fperiod==const.EVENT_YEAR_PERIOD, 
+                                                 and_(c_event.CEvent.fday>=next_year_date_from.day,
+                                                 and_(c_event.CEvent.fmonth>=next_year_date_from.month,
+                                                 and_(c_event.CEvent.fday<=date_to.day,
+                                                 and_(c_event.CEvent.fmonth<=date_to.month)))))
+            queried_data2 = queried_data2.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
+            queried_data2 = queried_data2.all()
+
+            for data in queried_data2:
+                
+                data.fyear = next_year_date_from.year
+                queried_data1.append(data)
+
+            return queried_data1  # , queried_data2
+        else:
+            
+            # *** Иначе делаем одну выборку
+            queried_data = self.session.query(c_event.CEvent)
+            queried_data = queried_data.filter(c_event.CEvent.fperiod==const.EVENT_YEAR_PERIOD, 
+                                               and_(c_event.CEvent.fday>=date_from.day,
+                                               and_(c_event.CEvent.fmonth>=date_from.fmonth,
+                                               and_(c_event.CEvent.fday<=date_to.day,
+                                               and_(c_event.CEvent.fmonth<=date_to.fmonth)))))
+            queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
+            queried_data = queried_data.all()
+            for data in queried_data:
+                
+                data.fyear = this_year_date_to.year
 
 
     def create_database(self):

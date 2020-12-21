@@ -6,6 +6,8 @@ import c_constants as cnst
 # from datetime import datetime as dt
 import calendar
 
+LAST_MONTH = 12
+
 def center_window(pwindow, pwindow_width, pwindow_height):
     """Центрует заданное окно."""
     screen_width = pwindow.winfo_screenwidth()
@@ -23,8 +25,7 @@ def center_window(pwindow, pwindow_width, pwindow_height):
 def get_months_last_date(pdate):
     """Возвращает первый день месяца"""
     return calendar.monthrange(pdate.year, pdate.month)[1]
-    # if pdate.month == 12: # December
-        # last_day_selected_month = dtime.datetime(pdate.year, pdate.month, 31)
-    # else:
-        # last_day_selected_month = dtime.datetime(pdate.year, pdate.month + 1, 1) - timedelta(days=1)
-    # return last_day_selected_month    
+
+def get_years_last_date(pdate):
+    """Возвращает последний день года."""
+    return calendar.monthrange(pdate.year, LAST_MONTH)[1]
