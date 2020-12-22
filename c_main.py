@@ -14,6 +14,8 @@ import c_database as db
 import c_eventlist as evlst
 import c_tools as tls
 
+# Добавить третий тип - единовременные события
+# Добавить в выборку справочник типов событий
 
 class MainWindow(tk.Frame):
     def __init__(self, pmaster=None, **kwargs):
