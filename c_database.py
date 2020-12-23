@@ -29,18 +29,6 @@ class CDatabase(object):
         c_ancestor.Base.metadata.bind = self.engine
 
 
-    def convert_monthly_tuple(pevent_super_tuple, pnew_date):
-        """Конвертирует кортеж в список, подставляя значения года и месяца из даты."""
-        event_super_list = []
-        for event_tuple in pevent_super_tuple:
-
-            event_list = list(event_tuple)
-            event_list[3] = pnew_date_to.year
-            event_list[2] = pnew_date_to.month
-            event_super_list.append(event_list)
-        return event_super_list    
-            
-
     def actual_monthly_events(self):
         """Возвращает список ежемесячных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
         # *** Дата по = текущая+период
@@ -232,27 +220,59 @@ class CDatabase(object):
                 data[3] = this_year_date_to.year
 
 
+    def convert_monthly_tuple(pevent_super_tuple, pnew_date):
+        """Конвертирует кортеж в список, подставляя значения года и месяца из даты."""
+        event_super_list = []
+        for event_tuple in pevent_super_tuple:
+
+            event_list = list(event_tuple)
+            event_list[3] = pnew_date_to.year
+            event_list[2] = pnew_date_to.month
+            event_super_list.append(event_list)
+        return event_super_list    
+          
+
     def create_database(self):
         """Создает или изменяет БД в соответствии с описанной в классах структурой."""
         c_ancestor.Base.metadata.create_all()
         count = self.session.query(c_eventtype.CEventType).count()
         if count == 0:
 
-            event_type = c_eventtype.CEventType(1, "День памяти ", "#8db0bd", "☦️")
-            self.session.add(event_type)
-            event_type = c_eventtype.CEventType(1, "День рождения ", "#ecc176", "🎂")
-            self.session.add(event_type)
-            event_type = c_eventtype.CEventType(1, "Памятная дата - ", "#02b6ec", "📆")
-            self.session.add(event_type)
-            event_type = c_eventtype.CEventType(1, "Напоминание: ", "#6dec04", "🔔")
-            self.session.add(event_type)
-            self.session.commit()
+            fill_event_types_table()
+        count = self.session.query(c_period.CPeriod).count()
+        if count == 0:
+
+            fill_periods_table()
 
 
     def delete_event(self, pid):
         """Удаляет уже существующее событие в БД."""
         event_data = self.session.query(c_event.CEvent).filter_by(id=pid)
         event_data.update({c_event.CEvent.fstatus:0}, synchronize_session = False)
+        self.session.commit()
+
+
+    def fill_event_types_table():
+        """Заполняет пустую таблицу справочника типов событий значениями."""
+        event_type = c_eventtype.CEventType(1, "День памяти ", "#8db0bd", "☦️")
+        self.session.add(event_type)
+        event_type = c_eventtype.CEventType(1, "День рождения ", "#ecc176", "🎂")
+        self.session.add(event_type)
+        event_type = c_eventtype.CEventType(1, "Памятная дата - ", "#02b6ec", "📆")
+        self.session.add(event_type)
+        event_type = c_eventtype.CEventType(1, "Напоминание: ", "#6dec04", "🔔")
+        self.session.add(event_type)
+        self.session.commit()
+
+
+    def fill_periods_table():
+    """Заполняет пустую таблицу справочника периодов значениями."""
+        period_type = c_period.CPeriod(1, "Ежемесячное событие")
+        self.session.add(period_type)
+        period_type = c_period.CPeriod(1, "Ежегодное событие")
+        self.session.add(period_type)
+        period_type = c_period.CPeriod(1, "Единовременное событие")
+        self.session.add(period_type)
         self.session.commit()
 
 
@@ -274,7 +294,7 @@ class CDatabase(object):
 
 
     def get_event_types_list(self): # +
-        """Возвращает события из базы."""
+        """Возвращает список ID и наименований типов событий."""
         event_types_name_list = []
         event_types_id_list = []
         queried_data = self.session.query(c_eventtype.CEventType).order_by(c_eventtype.CEventType.fname)
@@ -283,6 +303,19 @@ class CDatabase(object):
             event_types_name_list.append(event_type.fname)
             event_types_id_list.append(event_type.id)
         return event_types_id_list, event_types_name_list
+
+
+    def get_periods_list(self): # +
+        """Возвращает список ID и наименований периодов."""
+        periods_name_list = []
+        periods_id_list = []
+        queried_data = self.session.query(c_period.CPeriod).order_by(c_period.CPeriod.id)
+        for period in queried_data:
+            
+            periods_name_list.append(period.fname)
+            periods_id_list.append(period.id)
+        return periods_id_list, periods_name_list
+    
     
     
     def get_events_list(self): # +
