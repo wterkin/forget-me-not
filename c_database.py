@@ -30,7 +30,7 @@ class CDatabase(object):
           
 
 
-    def convert_monthly_tuple(pevent_super_tuple, pnew_date):
+    def convert_monthly_tuple(self, pevent_super_tuple, pnew_date):
         """Конвертирует кортеж в список, подставляя значения года и месяца из даты."""
         event_super_list = []
         for event_tuple in pevent_super_tuple:
@@ -42,7 +42,7 @@ class CDatabase(object):
         return event_super_list    
 
 
-    def convert_yearly_tuple(pevent_super_tuple, pnew_date):
+    def convert_yearly_tuple(self, pevent_super_tuple, pnew_date):
         """Конвертирует кортеж в список, подставляя значения года и месяца из даты."""
         event_super_list = []
         for event_tuple in pevent_super_tuple:
@@ -124,7 +124,7 @@ class CDatabase(object):
                                                  and_(c_event.CEvent.fday>=date_from.day,
                                                  and_(c_event.CEvent.fday<=this_month_date_to.day)))
             queried_data1 = queried_data1.order_by(c_event.CEvent.fday)
-            queried_data1 = convert_monthly_tuple(queried_data1.all(), this_month_date_to)
+            queried_data1 = self.convert_monthly_tuple(queried_data1.all(), this_month_date_to)
             
             queried_data2 = self.session.query(c_event.CEvent.fname,
                                                c_event.CEvent.fday,
@@ -140,7 +140,7 @@ class CDatabase(object):
                                                  and_(c_event.CEvent.fday>=next_month_date_from.day,
                                                  and_(c_event.CEvent.fday<=date_to.day)))
             queried_data2 = queried_data2.order_by(c_event.CEvent.fday)
-            queried_data2 = convert_monthly_tuple(queried_data2.all(), next_month_date_from)
+            queried_data2 = self.convert_monthly_tuple(queried_data2.all(), next_month_date_from)
             queried_data1.extend(queried_data2)
             return queried_data1
         else:
@@ -160,7 +160,7 @@ class CDatabase(object):
                                                and_(c_event.CEvent.fday>=date_from.day,
                                                and_(c_event.CEvent.fday<=date_to.day)))
             queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
-            queried_data = convert_monthly_tuple(queried_data.all(), date_from)
+            queried_data = self.convert_monthly_tuple(queried_data.all(), date_from)
             return queried_data
         
 
@@ -196,7 +196,7 @@ class CDatabase(object):
                                                  and_(c_event.CEvent.fmonth<=this_year_date_to.month)))))
             queried_data1 = queried_data1.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data1 = queried_data1.all()
-            convert_yearly_tuple(queried_data1, this_year_date_to)
+            self.convert_yearly_tuple(queried_data1, this_year_date_to)
             # Вторая выборка
             queried_data2 = self.session.query(c_event.CEvent.fname,
                                                c_event.CEvent.fday,
@@ -215,7 +215,7 @@ class CDatabase(object):
                                                  and_(c_event.CEvent.fmonth<=date_to.month)))))
             queried_data2 = queried_data2.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data2 = queried_data2.all()
-            convert_yearly_tuple(queried_data2, next_year_date_from)
+            self.convert_yearly_tuple(queried_data2, next_year_date_from)
 
             queried_data1.extend(queried_data2)
             return queried_data1
@@ -239,7 +239,7 @@ class CDatabase(object):
                                                and_(c_event.CEvent.fmonth<=date_to.fmonth)))))
             queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data = queried_data.all()
-            convert_monthly_tuple(queried_data, date_from)
+            self.convert_monthly_tuple(queried_data, date_from)
             return queried_data
             
 
