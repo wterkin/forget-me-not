@@ -96,11 +96,12 @@ class MainWindow(tk.Frame):
         
     def load_data(self):
         """Получает список событий за интервал, определенный в конфиге и отображает их."""
-        db_month_data = self.database.actual_monthly_events()
+        db_month_data = self.database.get_actual_monthly_events()
+        print("*** M.LD.lst ", db_month_data)
         for event in db_month_data:
                     
             print(event)
-        db_year_data = self.database.actual_yearly_events()
+        db_year_data = self.database.get_actual_yearly_events()
         for event in db_year_data:
                     
             print(event)

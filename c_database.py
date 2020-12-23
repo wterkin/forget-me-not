@@ -27,197 +27,7 @@ class CDatabase(object):
         Session.configure(bind=self.engine)
         self.session = Session()
         c_ancestor.Base.metadata.bind = self.engine
-
-
-    def actual_monthly_events(self):
-        """Возвращает список ежемесячных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
-        # *** Дата по = текущая+период
-        date_from = dt.now().date()
-        #print("*** DB.AME.df ", date_from)
-        # *** Если дата по в следующем месяце разделяем период на два отрезка - 
-        #     от текущей даты до конца м-ца и от нач. м-ца до даты по 
-        date_to =  date_from + dtime.timedelta(days=int(self.config.restore_value(c_config.MONITORING_PERIOD_KEY)))
-        #print("*** DB.AME.dt ", date_to)
-        if date_to.month != date_from.month:
-            
-            last_day = tls.get_months_last_date(date_from)
-            this_month_date_to = dtime.datetime(date_from.year, date_from.month, last_day)
-            #print("*** DB.AME.tmdt ", this_month_date_to)
-            
-            next_month_date_from = this_month_date_to + dtime.timedelta(days=1)
-            #print("*** DB.AME.nmdf ", next_month_date_from)
-            
-            # *** делаем две выборки
-            queried_data1 = self.session.query(c_event.CEvent.fname,
-                                               c_event.CEvent.fday,
-                                               c_event.CEvent.fmonth,
-                                               c_event.CEvent.fyear,
-                                               c_event.CEvent.ftype,
-                                               c_event.CEvent.fperiod,
-                                               c_eventtype.CEventType.fname,
-                                               c_eventtype.CEventType.fcolor,
-                                               c_eventtype.CEventType.femodji)
-            queried_data1 = queried_data1.join(c_eventtype.CEventType)
-            queried_data1 = queried_data1.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
-                                                 and_(c_event.CEvent.fday>=date_from.day,
-                                                 and_(c_event.CEvent.fday<=this_month_date_to.day)))
-            queried_data1 = queried_data1.order_by(c_event.CEvent.fday)
-            queried_data1 = convert_monthly_tuple(queried_data1.all(), this_month_date_to)
-            
-            queried_data2 = self.session.query(c_event.CEvent.fname,
-                                               c_event.CEvent.fday,
-                                               c_event.CEvent.fmonth,
-                                               c_event.CEvent.fyear,
-                                               c_event.CEvent.ftype,
-                                               c_event.CEvent.fperiod,
-                                               c_eventtype.CEventType.fname,
-                                               c_eventtype.CEventType.fcolor,
-                                               c_eventtype.CEventType.femodji)
-            queried_data2 = queried_data2.join(c_eventtype.CEventType)
-            queried_data2 = queried_data2.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
-                                                 and_(c_event.CEvent.fday>=next_month_date_from.day,
-                                                 and_(c_event.CEvent.fday<=date_to.day)))
-            queried_data2 = queried_data2.order_by(c_event.CEvent.fday)
-            queried_data2 = convert_monthly_tuple(queried_data2.all(), next_month_date_from)
-
-            # queried_data2 = queried_data2.all()
-
-            # for data in queried_data2:
-                
-                # data[3] = next_month_date_from.year
-                # data[2] = next_month_date_from.month
-
-            return queried_data1.extend(queried_data2)
-        else:
-
-        # *** Иначе делаем одну выборку
-            queried_data = self.session.query(c_event.CEvent.fname,
-                                              c_event.CEvent.fday,
-                                              c_event.CEvent.fmonth,
-                                              c_event.CEvent.fyear,
-                                              c_event.CEvent.ftype,
-                                              c_event.CEvent.fperiod,
-                                              c_eventtype.CEventType.fname,
-                                              c_eventtype.CEventType.fcolor,
-                                              c_eventtype.CEventType.femodji)
-            queried_data = queried_data.join(c_eventtype.CEventType)
-            queried_data = queried_data.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
-                                               and_(c_event.CEvent.fday>=date_from.day,
-                                               and_(c_event.CEvent.fday<=date_to.day)))
-            queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
-            queried_data = convert_monthly_tuple(queried_data.all(), date_from)
-
-            # queried_data = queried_data.all()
-            # for data in queried_data:
-                
-                # data[3] = this_month_date_to.year
-                # data[2] = this_month_date_to.month
-        return queried_data
-        
-
-    def actual_yearly_events(self):
-        """Возвращает список ежегодных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
-        # *** Дата с..
-        date_from = dt.now().date()
-        # *** Дата по..
-        date_to =  date_from + dtime.timedelta(days=int(self.config.restore_value(c_config.MONITORING_PERIOD_KEY)))
-        # *** Если дата по в следующем году разделяем период на два отрезка - 
-        #     от текущей даты до конца года и от нач. года до даты по 
-        if date_to.year != date_from.year:
-            
-            last_day = tls.get_years_last_date(date_from)
-            this_year_date_to = dtime.datetime(date_from.year, date_from.month, last_day)
-            #print("*** DB.AYE.tmdt ", this_year_date_to)
-            
-            next_year_date_from = this_year_date_to + dtime.timedelta(days=1)
-            #print("*** DB.AYE.nmdf ", next_year_date_from)
-            # *** делаем две выборки
-            queried_data1 = self.session.query(c_event.CEvent.fname,
-                                               c_event.CEvent.fday,
-                                               c_event.CEvent.fmonth,
-                                               c_event.CEvent.fyear,
-                                               c_event.CEvent.ftype,
-                                               c_event.CEvent.fperiod,
-                                               c_eventtype.CEventType.fname,
-                                               c_eventtype.CEventType.fcolor,
-                                               c_eventtype.CEventType.femodji)
-            queried_data1 = queried_data1.join(c_eventtype.CEventType)
-            queried_data1 = queried_data1.filter(c_event.CEvent.fperiod==const.EVENT_YEAR_PERIOD, 
-                                                 and_(c_event.CEvent.fday>=date_from.day,
-                                                 and_(c_event.CEvent.fmonth>=date_from.month,
-                                                 and_(c_event.CEvent.fday<=this_year_date_to.day,
-                                                 and_(c_event.CEvent.fmonth<=this_year_date_to.month)))))
-            queried_data1 = queried_data1.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
-            queried_data1 = queried_data1.all()
-
-            for data in queried_data1:
-                
-                data[3] = this_year_date_to.year
-
-            queried_data2 = self.session.query(c_event.CEvent.fname,
-                                               c_event.CEvent.fday,
-                                               c_event.CEvent.fmonth,
-                                               c_event.CEvent.fyear,
-                                               c_event.CEvent.ftype,
-                                               c_event.CEvent.fperiod,
-                                               c_eventtype.CEventType.fname,
-                                               c_eventtype.CEventType.fcolor,
-                                               c_eventtype.CEventType.femodji)
-            queried_data2 = queried_data2.join(c_eventtype.CEventType)
-            queried_data2 = queried_data2.filter(c_event.CEvent.fperiod==const.EVENT_YEAR_PERIOD, 
-                                                 and_(c_event.CEvent.fday>=next_year_date_from.day,
-                                                 and_(c_event.CEvent.fmonth>=next_year_date_from.month,
-                                                 and_(c_event.CEvent.fday<=date_to.day,
-                                                 and_(c_event.CEvent.fmonth<=date_to.month)))))
-            queried_data2 = queried_data2.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
-            queried_data2 = queried_data2.all()
-
-            for data in queried_data2:
-                
-                data[3] = next_year_date_from.year
-                queried_data1.append(data)
-
-            return queried_data1  # , queried_data2
-        else:
-            
-            # *** Иначе делаем одну выборку
-            # fname = Column(String, nullable=False)
-            # fday = Column(Integer, nullable=False)
-            # fmonth = Column(Integer, nullable=False)    
-            # fyear = Column(Integer, nullable=False)    
-            # ftype = Column(Integer, ForeignKey(c_eventtype.CEventType.id))
-            # atype = relationship(c_eventtype.CEventType)
-            # fperiod = Column(Integer, ForeignKey(c_period.CPeriod.id))
-            # aperiod = relationship(c_period.CPeriod)
-            # fname = Column(String,
-                            # nullable=False,
-                            # unique=True)
-            # fcolor = Column(String,
-                            # nullable=False)
-            # femodji = Column(String,
-                             # nullable=True)
-            
-            # queried_data = self.session.query(c_event.CEvent)
-            queried_data = self.session.query(c_event.CEvent.fname,
-                                              c_event.CEvent.fday,
-                                              c_event.CEvent.fmonth,
-                                              c_event.CEvent.fyear,
-                                              c_event.CEvent.ftype,
-                                              c_event.CEvent.fperiod,
-                                              c_eventtype.CEventType.fname,
-                                              c_eventtype.CEventType.fcolor,
-                                              c_eventtype.CEventType.femodji)
-            queried_data = queried_data.join(c_eventtype.CEventType)
-            queried_data = queried_data.filter(c_event.CEvent.fperiod==const.EVENT_YEAR_PERIOD, 
-                                               and_(c_event.CEvent.fday>=date_from.day,
-                                               and_(c_event.CEvent.fmonth>=date_from.fmonth,
-                                               and_(c_event.CEvent.fday<=date_to.day,
-                                               and_(c_event.CEvent.fmonth<=date_to.fmonth)))))
-            queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
-            queried_data = queried_data.all()
-            for data in queried_data:
-                
-                data[3] = this_year_date_to.year
+          
 
 
     def convert_monthly_tuple(pevent_super_tuple, pnew_date):
@@ -226,11 +36,22 @@ class CDatabase(object):
         for event_tuple in pevent_super_tuple:
 
             event_list = list(event_tuple)
-            event_list[3] = pnew_date_to.year
-            event_list[2] = pnew_date_to.month
+            event_list[3] = pnew_date.year
+            event_list[2] = pnew_date.month
             event_super_list.append(event_list)
         return event_super_list    
-          
+
+
+    def convert_yearly_tuple(pevent_super_tuple, pnew_date):
+        """Конвертирует кортеж в список, подставляя значения года и месяца из даты."""
+        event_super_list = []
+        for event_tuple in pevent_super_tuple:
+
+            event_list = list(event_tuple)
+            event_list[3] = pnew_date.year
+            event_super_list.append(event_list)
+        return event_super_list    
+
 
     def create_database(self):
         """Создает или изменяет БД в соответствии с описанной в классах структурой."""
@@ -266,7 +87,7 @@ class CDatabase(object):
 
 
     def fill_periods_table():
-    """Заполняет пустую таблицу справочника периодов значениями."""
+        """Заполняет пустую таблицу справочника периодов значениями."""
         period_type = c_period.CPeriod(1, "Ежемесячное событие")
         self.session.add(period_type)
         period_type = c_period.CPeriod(1, "Ежегодное событие")
@@ -275,6 +96,152 @@ class CDatabase(object):
         self.session.add(period_type)
         self.session.commit()
 
+
+    def get_actual_monthly_events(self):
+        """Возвращает список ежемесячных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
+        # *** Дата по = текущая+период
+        date_from = dt.now().date()
+        # *** Если дата по в следующем месяце разделяем период на два отрезка - 
+        #     от текущей даты до конца м-ца и от нач. м-ца до даты по 
+        date_to =  date_from + dtime.timedelta(days=int(self.config.restore_value(c_config.MONITORING_PERIOD_KEY)))
+        if date_to.month != date_from.month:
+            
+            last_day = tls.get_months_last_date(date_from)
+            this_month_date_to = dtime.datetime(date_from.year, date_from.month, last_day)
+            next_month_date_from = this_month_date_to + dtime.timedelta(days=1)
+            # *** делаем две выборки
+            queried_data1 = self.session.query(c_event.CEvent.fname,
+                                               c_event.CEvent.fday,
+                                               c_event.CEvent.fmonth,
+                                               c_event.CEvent.fyear,
+                                               c_event.CEvent.ftype,
+                                               c_event.CEvent.fperiod,
+                                               c_eventtype.CEventType.fname,
+                                               c_eventtype.CEventType.fcolor,
+                                               c_eventtype.CEventType.femodji)
+            queried_data1 = queried_data1.join(c_eventtype.CEventType)
+            queried_data1 = queried_data1.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
+                                                 and_(c_event.CEvent.fday>=date_from.day,
+                                                 and_(c_event.CEvent.fday<=this_month_date_to.day)))
+            queried_data1 = queried_data1.order_by(c_event.CEvent.fday)
+            queried_data1 = convert_monthly_tuple(queried_data1.all(), this_month_date_to)
+            
+            queried_data2 = self.session.query(c_event.CEvent.fname,
+                                               c_event.CEvent.fday,
+                                               c_event.CEvent.fmonth,
+                                               c_event.CEvent.fyear,
+                                               c_event.CEvent.ftype,
+                                               c_event.CEvent.fperiod,
+                                               c_eventtype.CEventType.fname,
+                                               c_eventtype.CEventType.fcolor,
+                                               c_eventtype.CEventType.femodji)
+            queried_data2 = queried_data2.join(c_eventtype.CEventType)
+            queried_data2 = queried_data2.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
+                                                 and_(c_event.CEvent.fday>=next_month_date_from.day,
+                                                 and_(c_event.CEvent.fday<=date_to.day)))
+            queried_data2 = queried_data2.order_by(c_event.CEvent.fday)
+            queried_data2 = convert_monthly_tuple(queried_data2.all(), next_month_date_from)
+            queried_data1.extend(queried_data2)
+            return queried_data1
+        else:
+
+            # *** Иначе делаем одну выборку
+            queried_data = self.session.query(c_event.CEvent.fname,
+                                              c_event.CEvent.fday,
+                                              c_event.CEvent.fmonth,
+                                              c_event.CEvent.fyear,
+                                              c_event.CEvent.ftype,
+                                              c_event.CEvent.fperiod,
+                                              c_eventtype.CEventType.fname,
+                                              c_eventtype.CEventType.fcolor,
+                                              c_eventtype.CEventType.femodji)
+            queried_data = queried_data.join(c_eventtype.CEventType)
+            queried_data = queried_data.filter(c_event.CEvent.fperiod==const.EVENT_MONTH_PERIOD, 
+                                               and_(c_event.CEvent.fday>=date_from.day,
+                                               and_(c_event.CEvent.fday<=date_to.day)))
+            queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
+            queried_data = convert_monthly_tuple(queried_data.all(), date_from)
+            return queried_data
+        
+
+    def get_actual_yearly_events(self):
+        """Возвращает список ежегодных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
+        # *** Дата с..
+        date_from = dt.now().date()
+        # *** Дата по..
+        date_to =  date_from + dtime.timedelta(days=int(self.config.restore_value(c_config.MONITORING_PERIOD_KEY)))
+        # *** Если дата по в следующем году разделяем период на два отрезка - 
+        #     от текущей даты до конца года и от нач. года до даты по 
+        if date_to.year != date_from.year:
+            
+            last_day = tls.get_years_last_date(date_from)
+            this_year_date_to = dtime.datetime(date_from.year, date_from.month, last_day)
+            
+            next_year_date_from = this_year_date_to + dtime.timedelta(days=1)
+            # *** делаем две выборки
+            queried_data1 = self.session.query(c_event.CEvent.fname,
+                                               c_event.CEvent.fday,
+                                               c_event.CEvent.fmonth,
+                                               c_event.CEvent.fyear,
+                                               c_event.CEvent.ftype,
+                                               c_event.CEvent.fperiod,
+                                               c_eventtype.CEventType.fname,
+                                               c_eventtype.CEventType.fcolor,
+                                               c_eventtype.CEventType.femodji)
+            queried_data1 = queried_data1.join(c_eventtype.CEventType)
+            queried_data1 = queried_data1.filter(c_event.CEvent.fperiod==const.EVENT_YEAR_PERIOD, 
+                                                 and_(c_event.CEvent.fday>=date_from.day,
+                                                 and_(c_event.CEvent.fmonth>=date_from.month,
+                                                 and_(c_event.CEvent.fday<=this_year_date_to.day,
+                                                 and_(c_event.CEvent.fmonth<=this_year_date_to.month)))))
+            queried_data1 = queried_data1.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
+            queried_data1 = queried_data1.all()
+            convert_yearly_tuple(queried_data1, this_year_date_to)
+            # Вторая выборка
+            queried_data2 = self.session.query(c_event.CEvent.fname,
+                                               c_event.CEvent.fday,
+                                               c_event.CEvent.fmonth,
+                                               c_event.CEvent.fyear,
+                                               c_event.CEvent.ftype,
+                                               c_event.CEvent.fperiod,
+                                               c_eventtype.CEventType.fname,
+                                               c_eventtype.CEventType.fcolor,
+                                               c_eventtype.CEventType.femodji)
+            queried_data2 = queried_data2.join(c_eventtype.CEventType)
+            queried_data2 = queried_data2.filter(c_event.CEvent.fperiod==const.EVENT_YEAR_PERIOD, 
+                                                 and_(c_event.CEvent.fday>=next_year_date_from.day,
+                                                 and_(c_event.CEvent.fmonth>=next_year_date_from.month,
+                                                 and_(c_event.CEvent.fday<=date_to.day,
+                                                 and_(c_event.CEvent.fmonth<=date_to.month)))))
+            queried_data2 = queried_data2.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
+            queried_data2 = queried_data2.all()
+            convert_yearly_tuple(queried_data2, next_year_date_from)
+
+            queried_data1.extend(queried_data2)
+            return queried_data1
+        else:
+            
+            # *** Иначе делаем одну выборку
+            queried_data = self.session.query(c_event.CEvent.fname,
+                                              c_event.CEvent.fday,
+                                              c_event.CEvent.fmonth,
+                                              c_event.CEvent.fyear,
+                                              c_event.CEvent.ftype,
+                                              c_event.CEvent.fperiod,
+                                              c_eventtype.CEventType.fname,
+                                              c_eventtype.CEventType.fcolor,
+                                              c_eventtype.CEventType.femodji)
+            queried_data = queried_data.join(c_eventtype.CEventType)
+            queried_data = queried_data.filter(c_event.CEvent.fperiod==const.EVENT_YEAR_PERIOD, 
+                                               and_(c_event.CEvent.fday>=date_from.day,
+                                               and_(c_event.CEvent.fmonth>=date_from.fmonth,
+                                               and_(c_event.CEvent.fday<=date_to.day,
+                                               and_(c_event.CEvent.fmonth<=date_to.fmonth)))))
+            queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
+            queried_data = queried_data.all()
+            convert_monthly_tuple(queried_data, date_from)
+            return queried_data
+            
 
     def get_event_data(self, pid): # +
         """Возвращает данные события."""
