@@ -18,6 +18,7 @@ class EventList(tk.Toplevel):
         self.load_data()
         # *** Показываем окно
         self.transient(self.master)
+        self.focus_set()
         self.grab_set()
         self.master.wait_window(self)
 
@@ -25,6 +26,10 @@ class EventList(tk.Toplevel):
     def construct_window(self):
         """Создает интерфейс окна."""
         self.title(cnst.EVENT_LIST_WINDOW_TITLE)
+        window_left, window_top = tls.center_window(self, cnst.EVENT_LIST_WINDOW_WIDTH, cnst.EVENT_LIST_WINDOW_HEIGHT)
+        window_geometry = f"{cnst.EVENT_LIST_WINDOW_WIDTH}x{cnst.EVENT_LIST_WINDOW_HEIGHT}+{window_left}+{window_top}"
+        self.geometry(window_geometry)
+        self.update_idletasks()
 
         # *** Фрейм кнопок
         self.list_buttons_frame = tk.Frame(self)
@@ -51,14 +56,9 @@ class EventList(tk.Toplevel):
         self.events_box = tk.Listbox(self.events_frame)  #! , width=20, height=4)
         self.events_box.pack(expand=1, fill=tk.BOTH) # padx=10, pady=10
         self.events_frame.pack(expand=1, fill=tk.BOTH)
-        
-        print("EVLST:CONS:GEO", self.master.get_master().geometry())
-        window_left, window_top = tls.center_window(self, cnst.EVENT_LIST_WINDOW_WIDTH, cnst.EVENT_LIST_WINDOW_HEIGHT)
-        window_geometry = f"{cnst.EVENT_LIST_WINDOW_WIDTH}x{cnst.EVENT_LIST_WINDOW_HEIGHT}+{window_left}+{window_top}"
-        self.geometry(window_geometry)
         self.update_idletasks()
-
-
+        
+        # print("EVLST:CONS:GEO", self.master.get_master().geometry())
    
 
     def delete_event(self):
