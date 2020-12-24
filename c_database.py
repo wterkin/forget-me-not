@@ -8,14 +8,13 @@ from sqlalchemy import and_
 import datetime as dtime
 from datetime import datetime as dt
 
-
 import c_ancestor
 import c_config
-import c_eventtype
-#import c_period
-import c_event  
-import c_tools as tls    
 import c_constants as const
+import c_eventtype
+import c_event  
+import c_period
+import c_tools as tls    
 
 class CDatabase(object):
     """Класс осуществляет работу с БД."""
@@ -282,7 +281,6 @@ class CDatabase(object):
             periods_name_list.append(period.fname)
             periods_id_list.append(period.id)
         return periods_id_list, periods_name_list
-    
     
     
     def get_events_list(self): # +

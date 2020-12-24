@@ -15,13 +15,13 @@ class EventEditor(tk.Toplevel):
         self.event_period_var.set(0)
         #self.event_type = 0
         self.construct_window()
+        # *** Загрузим список типов событий
+        self.load_event_types_list()
+        # *** Загрузим список периодов
+        self.load_periods_list()
         if self.id is not None:
 
             self.load_data()
-        else:
-
-            # *** Загрузим список типов событий
-            self.load_event_types_list()
             
         self.transient(self.master)
         self.grab_set()
@@ -43,29 +43,35 @@ class EventEditor(tk.Toplevel):
                                    pady=10)
 
         # *** Тип и период события
-        self.event_type_frame = tk.Frame(self)
-        self.event_type_box = tk.Listbox(self.event_type_frame,
+        self.options_frame = tk.Frame(self)
+        self.event_type_box = tk.Listbox(self.options_frame,
                                          height=4,
                                          width=20)
+        
+        self.periods_box = tk.Listbox(self.options_frame,
+                                      height=4,
+                                      width=20)
         self.event_type_box.pack(side=tk.LEFT)
+        self.periods_box.pack(side=tk.LEFT)
         
-        self.period_monthly_rb = tk.Radiobutton(indicatoron=1,
-                                          master=self.event_type_frame,
-                                          text="Ежемесячно",
-                                          value=0,
-                                          variable=self.event_period_var
-                                          )
-        self.period_monthly_rb.pack(side=tk.LEFT)  # anchor=tk.W)
-        self.period_yearly_rb = tk.Radiobutton(indicatoron=1,
-                                          master=self.event_type_frame,
-                                          text="Ежегодно  ",
-                                          value=1,
-                                          variable=self.event_period_var
-                                          )
-        self.period_yearly_rb.pack(side=tk.RIGHT)  # anchor=W)
         
-        self.event_type_frame.pack(padx=10,
-                                   pady=10)
+        # self.period_monthly_rb = tk.Radiobutton(indicatoron=1,
+                                          # master=self.event_type_frame,
+                                          # text="Ежемесячно",
+                                          # value=0,
+                                          # variable=self.event_period_var
+                                          # )
+        # self.period_monthly_rb.pack(side=tk.LEFT)  # anchor=tk.W)
+        # self.period_yearly_rb = tk.Radiobutton(indicatoron=1,
+                                          # master=self.event_type_frame,
+                                          # text="Ежегодно  ",
+                                          # value=1,
+                                          # variable=self.event_period_var
+                                          # )
+        # self.period_yearly_rb.pack(side=tk.RIGHT)  # anchor=W)
+        
+        self.options_frame.pack(padx=10,
+                                pady=10)
       
         # *** Дата события
         self.event_date_frame = tk.Frame(self)
@@ -112,6 +118,13 @@ class EventEditor(tk.Toplevel):
         for event_name in event_types_name_list:
             self.event_type_box.insert(tk.END, event_name)
     
+    def load_periods_list(self):
+        """Загружает список периодов в listbox."""
+        self.periods_id_list, periods_name_list = self.database.get_periods_list()
+        for period in periods_name_list:
+            print("EVED:LPL:nam ", period)
+            self.periods_box.insert(tk.END, period)
+        
     
     def save_data(self):
         """Сохраняет введённые данные."""
