@@ -57,29 +57,12 @@ class EventEditor(tk.Toplevel):
         self.event_type_box = tk.Listbox(self.options_frame,
                                          height=6,
                                          width=30)
+        self.event_type_box.pack(side=tk.LEFT)
         
         self.event_period_box = tk.Listbox(self.options_frame,
                                            height=6,
                                            width=30)
-        self.event_type_box.pack(side=tk.LEFT)
         self.event_period_box.pack(side=tk.LEFT)
-        
-        
-        # self.period_monthly_rb = tk.Radiobutton(indicatoron=1,
-                                          # master=self.event_type_frame,
-                                          # text="Ежемесячно",
-                                          # value=0,
-                                          # variable=self.event_period_var
-                                          # )
-        # self.period_monthly_rb.pack(side=tk.LEFT)  # anchor=tk.W)
-        # self.period_yearly_rb = tk.Radiobutton(indicatoron=1,
-                                          # master=self.event_type_frame,
-                                          # text="Ежегодно  ",
-                                          # value=1,
-                                          # variable=self.event_period_var
-                                          # )
-        # self.period_yearly_rb.pack(side=tk.RIGHT)  # anchor=W)
-        
         self.options_frame.pack(padx=10,
                                 pady=10)
       
@@ -107,27 +90,17 @@ class EventEditor(tk.Toplevel):
         self.cancel_button.pack(side=tk.RIGHT)
         self.buttons_frame.pack(padx=10,
                                 pady=10)
-
-        # EVENT_EDITOR_WINDOW_WIDTH = 400
-        # EVENT_EDITOR_WINDOW_HEIGHT = 400
         self.update_idletasks()
                                 
         
     
     def load_data(self):
         """Процедура загрузки данных в контролы."""
-        self.load_event_types_list()
         event_name, event_date, self.event_type, self.event_period = self.database.get_event_data(self.id)
-        # print("EVED.LD.EVNNM ", event_name)
         self.event_name_entry.insert(tk.END, event_name)
-        # print("EVED.LD.EVNDT ", event_date)
         self.event_date_entry.set_date(event_date)
-        # print("EVED.LD.EVNTP ", self.event_type)
         self.event_type_box.select_set(self.event_types_id_list.index(self.event_type))
-        # self.event_type_box.focus(self.event_type)
-        # print("EVED.LD.EVNPER ", self.event_period)
         self.event_period_box.select_set(self.event_types_id_list.index(self.event_period))
-        # self.event_period_box.focus(self.event_period)
 
     
     def load_event_types_list(self):
@@ -148,39 +121,39 @@ class EventEditor(tk.Toplevel):
         """Сохраняет введённые данные."""
         event_date = datetime.strptime(self.event_date_entry.get(), "%d.%m.%Y")
         selected_type = self.event_type_box.curselection()
-        # *** Если внезапно в листбоксе нет выбранного элемента - используем сохраненный ID
+        # *** Если внезапно в листбоксе нет выбранного типа - используем сохраненный.
         if len(selected_type) == 0:
         
-            print("*** Ooooopsss!....", self.event_type)
+            print("*** Ooooopsss! type....", self.event_type)
             event_type = self.event_type
         else:
             
             event_type = self.event_types_id_list[selected_type[0]]
 
         selected_period = self.event_period_box.curselection()
-        # *** Если внезапно в листбоксе нет выбранного элемента - используем сохраненный ID
+        # *** Если внезапно в листбоксе нет выбранного периода - используем сохраненный.
         if len(selected_period) == 0:
         
-            print("*** Ooooopsss!....", self.event_period)
+            print("*** Ooooopsss! period....", self.event_period)
             event_period = self.event_period
         else:
             
             event_period = self.event_period_id_list[selected_period[0]]
-            
+           
+        
         if self.id is None:
 
             self.database.insert_event(self.event_name_entry.get().strip(),
                                        event_date,
                                        event_type,
-                                       self.event_period_var.get())
+                                       event_period)
         else:
 
             self.database.update_event(self.id, 
                                        self.event_name_entry.get().strip(),
                                        event_date,
                                        event_type,
-                                       self.event_period_var.get())
-        print("EVED.LD.EVNPER ", self.event_period_var.get())
+                                       event_period)
         self.destroy()
     
     
