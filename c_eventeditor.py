@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import tkinter as tk
+from tkinter import ttk
 import tkcalendar as tkcal
+
 from datetime import datetime
 
 import c_constants as cnst
@@ -14,9 +16,6 @@ class EventEditor(tk.Toplevel):
         self.master = pmaster
         self.database = pdatabase
         self.id = pid
-        self.event_period_var = tk.IntVar()
-        self.event_period_var.set(0)
-        #self.event_type = 0
         self.construct_window()
         # *** Загрузим список типов событий
         self.load_event_types_list()
@@ -40,9 +39,10 @@ class EventEditor(tk.Toplevel):
         self.geometry(window_geometry)
         self.update_idletasks()
 
+        # *** Наименование события
         self.event_name_frame = tk.Frame(self)
         self.event_name_entry = tk.Entry(self.event_name_frame,
-                                         width=20)
+                                         width=40)
         self.event_name_entry.pack(side=tk.RIGHT)
         self.event_name_entry.focus()
         self.event_name_label = tk.Label(self.event_name_frame,
@@ -53,28 +53,37 @@ class EventEditor(tk.Toplevel):
                                    pady=10)
 
         # *** Тип и период события
+        self.options_labels_frame = tk.Frame(self)
+        self.event_type_label = tk.Label(self.options_labels_frame,
+                                         text="Тип события",
+                                         width=20)
+        self.event_type_label.pack(side=tk.LEFT)
+        self.event_period_label = tk.Label(self.options_labels_frame,
+                                         text="Периодичность события",
+                                         width=20)
+        self.event_period_label.pack(side=tk.RIGHT)
+        self.options_labels_frame.pack()
+
         self.options_frame = tk.Frame(self)
-        self.event_type_box = tk.Listbox(self.options_frame,
-                                         height=6,
-                                         width=30)
-        self.event_type_box.pack(side=tk.LEFT)
-        
-        self.event_period_box = tk.Listbox(self.options_frame,
-                                           height=6,
-                                           width=30)
-        self.event_period_box.pack(side=tk.LEFT)
+        self.event_type_combo = ttk.Combobox(self.options_frame, width=30)
+        self.event_type_combo.pack(side=tk.LEFT)
+        self.event_period_combo = ttk.Combobox(self.options_frame, width=30)
+        self.event_period_combo.pack(side=tk.LEFT)
         self.options_frame.pack(padx=10,
                                 pady=10)
       
         # *** Дата события
         self.event_date_frame = tk.Frame(self)
+        self.event_date_label = tk.Label(self.event_date_frame,
+                                         text="Дата события",
+                                         width=20)
+        self.event_date_label.pack(side=tk.LEFT)
+
         self.event_date_entry = tkcal.DateEntry(self.event_date_frame,
                                     width=12,
                                     locale="ru_RU",
-                                    #background='darkblue',
-                                    #foreground='white',
                                     borderwidth=2)        
-        self.event_date_entry.pack()
+        self.event_date_entry.pack(side=tk.RIGHT)
         self.event_date_frame.pack(padx=10,
                                    pady=10)
 
@@ -99,48 +108,37 @@ class EventEditor(tk.Toplevel):
         event_name, event_date, self.event_type, self.event_period = self.database.get_event_data(self.id)
         self.event_name_entry.insert(tk.END, event_name)
         self.event_date_entry.set_date(event_date)
-        self.event_type_box.select_set(self.event_types_id_list.index(self.event_type))
-        self.event_period_box.select_set(self.event_types_id_list.index(self.event_period))
+        print("EVED:LD:type ", self.event_type)
+        print("EVED:LD:period ", self.event_period)
+        
+        self.event_type_combo.current(self.event_types_id_list.index(self.event_type))
+        self.event_period_combo.current(self.event_period_id_list.index(self.event_period))
 
     
     def load_event_types_list(self):
         """Загружает список типов событий в listbox."""
         self.event_types_id_list, event_types_name_list = self.database.get_event_types_list()
-        for event_name in event_types_name_list:
-            self.event_type_box.insert(tk.END, event_name)
+        # for event_name in event_types_name_list:
+        self.event_type_combo["values"] = event_types_name_list
     
     def load_periods_list(self):
         """Загружает список периодов в listbox."""
         self.event_period_id_list, event_period_name_list = self.database.get_periods_list()
-        for period in event_period_name_list:
-            print("EVED:LPL:nam ", period)
-            self.event_period_box.insert(tk.END, period)
+        self.event_period_combo["values"] = event_period_name_list
+        # for period in event_period_name_list:
+            # print("EVED:LPL:nam ", period)
+            # self.event_period_box.insert(tk.END, period)
         
     
     def save_data(self):
         """Сохраняет введённые данные."""
         event_date = datetime.strptime(self.event_date_entry.get(), "%d.%m.%Y")
-        selected_type = self.event_type_box.curselection()
-        # *** Если внезапно в листбоксе нет выбранного типа - используем сохраненный.
-        if len(selected_type) == 0:
-        
-            print("*** Ooooopsss! type....", self.event_type)
-            event_type = self.event_type
-        else:
-            
-            event_type = self.event_types_id_list[selected_type[0]]
-
-        selected_period = self.event_period_box.curselection()
-        # *** Если внезапно в листбоксе нет выбранного периода - используем сохраненный.
-        if len(selected_period) == 0:
-        
-            print("*** Ooooopsss! period....", self.event_period)
-            event_period = self.event_period
-        else:
-            
-            event_period = self.event_period_id_list[selected_period[0]]
+        event_type = self.event_types_id_list[self.event_type_combo.current()]
+        event_period = self.event_period_id_list[self.event_period_combo.current()]
+        print("EVED:SD:type ", event_type)
+        print("EVED:SD:period ", event_period)
            
-        
+      
         if self.id is None:
 
             self.database.insert_event(self.event_name_entry.get().strip(),
