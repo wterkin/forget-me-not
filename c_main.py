@@ -7,7 +7,7 @@ from tkinter.ttk  import Style
 import tkinter as tk
 from pathlib import Path
 from datetime import datetime
-
+import datetime as dtime
 import c_config as cfg
 import c_constants as cnst
 import c_database as db
@@ -91,22 +91,49 @@ class MainWindow(tk.Frame):
     def event_list(self):
         """Создает и открывает окно списка событий."""
         evlst.EventList(pmaster=self, pdatabase=self.database)
-        
-        
+
+
+       
+       
     def load_data(self):
         """Получает список событий за интервал, определенный в конфиге и отображает их."""
+        def sort_list(x):
+            
+            print("@@@ ", x[3], x[2], x[1])
+            xdate=dtime.date(x[3], x[2], x[1])
+            print("### ", xdate)
+            delta=xdate-dtime.date(2000,1,1)
+            # ydate=dtime.datetime(y[3], y[2], y[1])
+            print("!!! ", delta.days)
+            return delta.days
+
         db_month_data = self.database.get_actual_monthly_events()
-        print("**** LDDT:month")
-        for event in db_month_data:
+        # print("**** LDDT:month")
+        # for event in db_month_data:
 
-            print(event)
+            # print(event)
         db_year_data = self.database.get_actual_yearly_events()
-        print("**** LDDT:year")
-        for event in db_year_data:
+        # print("**** LDDT:year")
+        # for event in db_year_data:
+
+            # print(event)
+            
+        db_one_shot_data = self.database.get_actual_one_shot_events()
+        # print("**** LDDT:one shot")
+        # for event in db_one_shot_data:
+
+            # print(event)
+            
+        full_data = []
+        full_data.extend(db_one_shot_data)
+        full_data.extend(db_year_data)
+        full_data.extend(db_month_data)
+        sorted(full_data, key=sort_list)
+        # full_data.sort(key=sort_list)
+        for event in full_data:
 
             print(event)
-    
-
+       
         
     def quit_program(self):
         """Закрывает программу."""
