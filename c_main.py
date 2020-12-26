@@ -6,7 +6,7 @@
 from tkinter.ttk  import Style
 import tkinter as tk
 from pathlib import Path
-
+from datetime import datetime
 
 import c_config as cfg
 import c_constants as cnst
@@ -32,8 +32,7 @@ class MainWindow(tk.Frame):
             
         self.construct_window()
         self.load_data()
-        # self.text_font=("Helvetica", "14")
-        # self.button_font=()
+
 
     def is_database_exists(self):
         """Проверяет наличие базы данных по пути в конфигурации."""
@@ -97,22 +96,16 @@ class MainWindow(tk.Frame):
     def load_data(self):
         """Получает список событий за интервал, определенный в конфиге и отображает их."""
         db_month_data = self.database.get_actual_monthly_events()
-        print("*** M.LD.lst ", db_month_data)
+        print("**** LDDT:month")
         for event in db_month_data:
-                    
+
             print(event)
         db_year_data = self.database.get_actual_yearly_events()
+        print("**** LDDT:year")
         for event in db_year_data:
-                    
+
             print(event)
     
-
-        #else:
-        
-        
-        #    for event in db_data:
-                
-                #print(event)
 
         
     def quit_program(self):
@@ -123,9 +116,11 @@ class MainWindow(tk.Frame):
         
 def main():
     """Запускающая процедура."""
+    # print("*** MAIN:MAIN:1 ", datetime.now())
     root = tk.Tk()
     main_window = MainWindow(root)
     main_window.pack()
+    # print("*** MAIN:MAIN:2 ", datetime.now())
     root.mainloop()
  
  

@@ -108,8 +108,8 @@ class EventEditor(tk.Toplevel):
         event_name, event_date, self.event_type, self.event_period = self.database.get_event_data(self.id)
         self.event_name_entry.insert(tk.END, event_name)
         self.event_date_entry.set_date(event_date)
-        print("EVED:LD:type ", self.event_type)
-        print("EVED:LD:period ", self.event_period)
+        # print("EVED:LD:type ", self.event_type)
+        # print("EVED:LD:period ", self.event_period)
         
         self.event_type_combo.current(self.event_types_id_list.index(self.event_type))
         self.event_period_combo.current(self.event_period_id_list.index(self.event_period))
@@ -118,26 +118,21 @@ class EventEditor(tk.Toplevel):
     def load_event_types_list(self):
         """Загружает список типов событий в listbox."""
         self.event_types_id_list, event_types_name_list = self.database.get_event_types_list()
-        # for event_name in event_types_name_list:
         self.event_type_combo["values"] = event_types_name_list
     
     def load_periods_list(self):
         """Загружает список периодов в listbox."""
         self.event_period_id_list, event_period_name_list = self.database.get_periods_list()
         self.event_period_combo["values"] = event_period_name_list
-        # for period in event_period_name_list:
-            # print("EVED:LPL:nam ", period)
-            # self.event_period_box.insert(tk.END, period)
-        
+
     
     def save_data(self):
         """Сохраняет введённые данные."""
         event_date = datetime.strptime(self.event_date_entry.get(), "%d.%m.%Y")
         event_type = self.event_types_id_list[self.event_type_combo.current()]
         event_period = self.event_period_id_list[self.event_period_combo.current()]
-        print("EVED:SD:type ", event_type)
-        print("EVED:SD:period ", event_period)
-           
+        # print("EVED:SD:type ", event_type)
+        # print("EVED:SD:period ", event_period)
       
         if self.id is None:
 

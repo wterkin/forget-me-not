@@ -3,7 +3,7 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 
 import datetime as dtime
 from datetime import datetime as dt
@@ -163,6 +163,24 @@ class CDatabase(object):
             return queried_data
         
 
+    def get_actual_one_shot_events(self):
+        """Возвращает список одноразовых событий, актуальных в периоде от текущей даты до текущей + период видимости."""
+        # *** Дата с..
+        date_from = dt.now().date()
+        # *** Дата по..
+        date_to =  date_from + dtime.timedelta(days=int(self.config.restore_value(c_config.MONITORING_PERIOD_KEY)))
+        # *** Если дата по в следующем году разделяем период на два отрезка - 
+        #     от текущей даты до конца года и от нач. года до даты по 
+        if date_to.year != date_from.year:
+            
+            last_day = tls.get_years_last_date(date_from)
+            this_year_date_to = dtime.datetime(date_from.year, date_from.month, last_day)
+            
+            next_year_date_from = this_year_date_to + dtime.timedelta(days=1)
+        else:
+            pass
+        
+
     def get_actual_yearly_events(self):
         """Возвращает список ежегодных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
         # *** Дата с..
@@ -193,6 +211,7 @@ class CDatabase(object):
                                                  and_(c_event.CEvent.fmonth>=date_from.month,
                                                  and_(c_event.CEvent.fday<=this_year_date_to.day,
                                                  and_(c_event.CEvent.fmonth<=this_year_date_to.month)))))
+            queried_data1 = queried_data1.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data1 = queried_data1.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data1 = queried_data1.all()
             self.convert_yearly_tuple(queried_data1, this_year_date_to)
