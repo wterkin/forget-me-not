@@ -99,11 +99,10 @@ class MainWindow(tk.Frame):
         """Получает список событий за интервал, определенный в конфиге и отображает их."""
         def sort_list(x):
             
-            print("@@@ ", x[3], x[2], x[1])
+            #print("@@@ ", x[3], x[2], x[1])
+            #print("### ", xdate)
             xdate=dtime.date(x[3], x[2], x[1])
-            print("### ", xdate)
-            delta=xdate-dtime.date(2000,1,1)
-            # ydate=dtime.datetime(y[3], y[2], y[1])
+            delta=xdate-dtime.date(datetime.now().year, datetime.now().month, datetime.now().day)
             print("!!! ", delta.days)
             return delta.days
 
@@ -128,9 +127,9 @@ class MainWindow(tk.Frame):
         full_data.extend(db_one_shot_data)
         full_data.extend(db_year_data)
         full_data.extend(db_month_data)
-        sorted(full_data, key=sort_list)
+        sorted_data = sorted(full_data, key=sort_list)
         # full_data.sort(key=sort_list)
-        for event in full_data:
+        for event in sorted_data:
 
             print(event)
        
