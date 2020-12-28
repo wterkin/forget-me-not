@@ -100,25 +100,24 @@ class MainWindow(tk.Frame):
         def sort_list(x):
             
             #print("@@@ ", x[3], x[2], x[1])
-            #print("### ", xdate)
-            xdate=dtime.date(x[3], x[2], x[1])
-            delta=xdate-dtime.date(datetime.now().year, datetime.now().month, datetime.now().day)
+            print("### ", x)
+            delta=x[6]-dtime.date(datetime.now().year, datetime.now().month, datetime.now().day)
             print("!!! ", delta.days)
             return delta.days
 
         db_month_data = self.database.get_actual_monthly_events()
-        # print("**** LDDT:month")
+        # print("**** LDDT:month ", db_month_data )
         # for event in db_month_data:
 
             # print(event)
         db_year_data = self.database.get_actual_yearly_events()
-        # print("**** LDDT:year")
+        # print("**** LDDT:year ", db_year_data)
         # for event in db_year_data:
 
             # print(event)
             
         db_one_shot_data = self.database.get_actual_one_shot_events()
-        # print("**** LDDT:one shot")
+        # print("**** LDDT:one shot ", db_one_shot_data)
         # for event in db_one_shot_data:
 
             # print(event)
@@ -128,7 +127,7 @@ class MainWindow(tk.Frame):
         full_data.extend(db_year_data)
         full_data.extend(db_month_data)
         sorted_data = sorted(full_data, key=sort_list)
-        # full_data.sort(key=sort_list)
+        full_data.sort(key=sort_list)
         for event in sorted_data:
 
             print(event)

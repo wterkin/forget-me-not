@@ -37,6 +37,28 @@ class CDatabase(object):
             event_list = list(event_tuple)
             event_list[3] = pnew_date.year
             event_list[2] = pnew_date.month
+            event_date = dtime.date(event_list[3], event_list[2], event_list[1])
+            event_list.pop(1)
+            event_list.pop(1)
+            event_list.pop(1)
+            event_list.append(event_date)
+            print("$$$$ ", event_list)
+            event_super_list.append(event_list)
+        return event_super_list    
+
+
+    def convert_one_shot_tuple(self, pevent_super_tuple):
+        """Конвертирует кортеж в список, подставляя значения года и месяца из даты."""
+        event_super_list = []
+        for event_tuple in pevent_super_tuple:
+
+            event_list = list(event_tuple)
+            event_date = dtime.date(event_list[3], event_list[2], event_list[1])
+            event_list.pop(1)
+            event_list.pop(1)
+            event_list.pop(1)
+            event_list.append(event_date)
+            print("@@@@@ ", event_list)
             event_super_list.append(event_list)
         return event_super_list    
 
@@ -48,6 +70,12 @@ class CDatabase(object):
 
             event_list = list(event_tuple)
             event_list[3] = pnew_date.year
+            event_date = dtime.date(event_list[3], event_list[2], event_list[1])
+            event_list.pop(1)
+            event_list.pop(1)
+            event_list.pop(1)
+            event_list.append(event_date)
+            print("##### ", event_list)
             event_super_list.append(event_list)
         return event_super_list    
 
@@ -215,6 +243,7 @@ class CDatabase(object):
                                                  
             queried_data1 = queried_data1.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data1 = queried_data1.all()
+            queried_data1 = self.convert_one_shot_tuple(queried_data1)
             # Вторая выборка
             queried_data2 = self.session.query(c_event.CEvent.fname,
                                                c_event.CEvent.fday,
@@ -238,6 +267,7 @@ class CDatabase(object):
             queried_data2 = queried_data2.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data2 = queried_data2.all()
             # *** Сливаем обе выборки
+            queried_data2 = self.convert_one_shot_tuple(queried_data2)
             queried_data1.extend(queried_data2)
             return queried_data1
         else:
@@ -264,6 +294,8 @@ class CDatabase(object):
 
             queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data = queried_data.all()
+            queried_data = self.convert_one_shot_tuple(queried_data)
+            
             return queried_data
 
     def get_actual_yearly_events(self):
@@ -304,7 +336,7 @@ class CDatabase(object):
             queried_data1 = queried_data1.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data1 = queried_data1.all()
             # *** Конвертируем кортеж в список и подставляем текущий год
-            self.convert_yearly_tuple(queried_data1, this_year_date_to)
+            queried_data1 = self.convert_yearly_tuple(queried_data1, this_year_date_to)
             # Вторая выборка
             queried_data2 = self.session.query(c_event.CEvent.fname,
                                                c_event.CEvent.fday,
@@ -328,7 +360,7 @@ class CDatabase(object):
             queried_data2 = queried_data2.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data2 = queried_data2.all()
             # *** Конвертируем кортеж в список и подставляем следующий год
-            self.convert_yearly_tuple(queried_data2, next_year_date_from)
+            queried_data2 = self.convert_yearly_tuple(queried_data2, next_year_date_from)
             # *** Сливаем обе выборки
             queried_data1.extend(queried_data2)
             return queried_data1
@@ -357,7 +389,7 @@ class CDatabase(object):
             queried_data = queried_data.order_by(c_event.CEvent.fmonth, c_event.CEvent.fday)
             queried_data = queried_data.all()
             # *** Конвертируем кортеж в список и подставляем текущий год
-            self.convert_yearly_tuple(queried_data, date_from)
+            queried_data = self.convert_yearly_tuple(queried_data, date_from)
             return queried_data
             
 
