@@ -298,6 +298,7 @@ class CDatabase(object):
             
             return queried_data
 
+
     def get_actual_yearly_events(self):
         """Возвращает список ежегодных событий, актуальных в периоде от текущей даты до текущей + период видимости."""
         # *** Дата с..
@@ -440,12 +441,20 @@ class CDatabase(object):
         event_id_list = []
         query = self.session.query(c_event.CEvent.id, c_event.CEvent.fname, c_eventtype.CEventType.fname)
         query = query.join(c_eventtype.CEventType)
+        query = query.filter(c_event.CEvent.fstatus>0) 
         query = query.all()
         for event_id, event_name, event_type_name in query:
             
             event_name_list.append(event_type_name+event_name)
             event_id_list.append(event_id)
         return event_id_list, event_name_list
+
+
+    def delete_event(self, pid): # +
+        """Удаляет уже существующее событие в БД."""
+        event_data = self.session.query(c_event.CEvent).filter_by(id=pid)
+        event_data.update({c_event.CEvent.fstatus: 0}, synchronize_session = False)
+        self.session.commit()
 
 
     def insert_event(self, pname, pdate, ptype, pperiod): # +

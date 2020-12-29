@@ -57,22 +57,22 @@ class MainWindow(tk.Frame):
         self.toolbar_frame.pack(side=tk.TOP)
         
         # *** Текстовый бокс событий годовой периодичности.
-        self.yearly_text_frame = tk.Frame(self.__master)
-        self.yearly_text = tk.Text(self.yearly_text_frame, width=25, height=15, bg="Seashell")
-        self.yearly_text.pack(fill=tk.BOTH)
-        self.yearly_scroll_bar = tk.Scrollbar(command=self.yearly_text.yview)
-        self.yearly_scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.yearly_text.config(yscrollcommand=self.yearly_scroll_bar.set)
-        self.yearly_text_frame.pack(expand=1, fill=tk.BOTH)
+        self.text_frame = tk.Frame(self.__master)
+        self.text = tk.Text(self.text_frame, width=25, height=15, bg="Seashell")
+        self.text.pack(fill=tk.BOTH)
+        self.scroll_bar = tk.Scrollbar(command=self.text.yview)
+        self.scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.text.config(yscrollcommand=self.scroll_bar.set)
+        self.text_frame.pack(expand=1, fill=tk.BOTH)
 
         # *** Текстовый бокс событий месячной периодичности.
-        self.monthly_text_frame = tk.Frame(self.__master)
-        self.monthly_text = tk.Text(self.monthly_text_frame, width=25, height=15, bg="Seashell")
-        self.monthly_text.pack(fill=tk.BOTH)
-        self.monthly_scroll_bar = tk.Scrollbar(command=self.monthly_text.yview)
-        self.monthly_scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.monthly_text.config(yscrollcommand=self.monthly_scroll_bar.set)
-        self.monthly_text_frame.pack(expand=1, fill=tk.BOTH)
+        # self.monthly_text_frame = tk.Frame(self.__master)
+        # self.monthly_text = tk.Text(self.monthly_text_frame, width=25, height=15, bg="Seashell")
+        # self.monthly_text.pack(fill=tk.BOTH)
+        # self.monthly_scroll_bar = tk.Scrollbar(command=self.monthly_text.yview)
+        # self.monthly_scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
+        # self.monthly_text.config(yscrollcommand=self.monthly_scroll_bar.set)
+        # self.monthly_text_frame.pack(expand=1, fill=tk.BOTH)
         
         
         # *** Отцентрируем окно
@@ -99,10 +99,10 @@ class MainWindow(tk.Frame):
         """Получает список событий за интервал, определенный в конфиге и отображает их."""
         def sort_list(x):
             
-            #print("@@@ ", x[3], x[2], x[1])
-            print("### ", x)
+            # print("@@@ ", x[3], x[2], x[1])
+            # print("### ", x)
             delta=x[6]-dtime.date(datetime.now().year, datetime.now().month, datetime.now().day)
-            print("!!! ", delta.days)
+            # print("!!! ", delta.days)
             return delta.days
 
         db_month_data = self.database.get_actual_monthly_events()
@@ -127,10 +127,14 @@ class MainWindow(tk.Frame):
         full_data.extend(db_year_data)
         full_data.extend(db_month_data)
         sorted_data = sorted(full_data, key=sort_list)
-        full_data.sort(key=sort_list)
+        # sorted_data.reverse()
+        # full_data.sort(key=sort_list)
+        data_row = 1.0
         for event in sorted_data:
-
+            
+            self.text.insert(data_row, f"{event[5]} {event[6]:%d.%m.%Y} {event[0]} \n")
             print(event)
+            data_row += 1
        
         
     def quit_program(self):

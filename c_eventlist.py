@@ -67,7 +67,9 @@ class EventList(tk.Toplevel):
         if len(selected_items) > 0:
 
             event_ident = self.event_id_list[selected_items[0]]
-            self.database.update_event(event_ident)
+            self.database.delete_event(event_ident)
+            # def update_event(self, pid, pname, pdate, ptype, pperiod): # +
+            
             self.load_data()
 
     

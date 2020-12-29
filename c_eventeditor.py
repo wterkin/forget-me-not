@@ -119,7 +119,8 @@ class EventEditor(tk.Toplevel):
         """Загружает список типов событий в listbox."""
         self.event_types_id_list, event_types_name_list = self.database.get_event_types_list()
         self.event_type_combo["values"] = event_types_name_list
-    
+  
+  
     def load_periods_list(self):
         """Загружает список периодов в listbox."""
         self.event_period_id_list, event_period_name_list = self.database.get_periods_list()
