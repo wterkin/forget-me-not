@@ -101,8 +101,9 @@ class MainWindow(tk.Frame):
             
             # print("@@@ ", x[3], x[2], x[1])
             # print("### ", x)
-            delta=x[6]-dtime.date(datetime.now().year, datetime.now().month, datetime.now().day)
-            # print("!!! ", delta.days)
+            #delta=x[6]-dtime.date(datetime.now().year, datetime.now().month, datetime.now().day
+            delta=x[6]-datetime.now().date()
+            print("!!! ", delta.days)
             return delta.days
 
         db_month_data = self.database.get_actual_monthly_events()

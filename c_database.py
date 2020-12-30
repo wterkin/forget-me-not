@@ -84,13 +84,15 @@ class CDatabase(object):
         """Создает или изменяет БД в соответствии с описанной в классах структурой."""
         c_ancestor.Base.metadata.create_all()
         count = self.session.query(c_eventtype.CEventType).count()
+        print("*** DB:CDB:cnt1 ", count)
         if count == 0:
 
-            fill_event_types_table()
+            self.fill_event_types_table()
         count = self.session.query(c_period.CPeriod).count()
+        print("*** DB:CDB:cnt2 ", count)
         if count == 0:
 
-            fill_periods_table()
+            self.fill_periods_table()
 
 
     def delete_event(self, pid):
@@ -100,7 +102,7 @@ class CDatabase(object):
         self.session.commit()
 
 
-    def fill_event_types_table():
+    def fill_event_types_table(self):
         """Заполняет пустую таблицу справочника типов событий значениями."""
         event_type = c_eventtype.CEventType(1, "День памяти ", "#8db0bd", "☦️")
         self.session.add(event_type)
@@ -113,7 +115,7 @@ class CDatabase(object):
         self.session.commit()
 
 
-    def fill_periods_table():
+    def fill_periods_table(self):
         """Заполняет пустую таблицу справочника периодов значениями."""
         period_type = c_period.CPeriod(1, "Ежемесячное событие")
         self.session.add(period_type)
